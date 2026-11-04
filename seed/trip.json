@@ -1,0 +1,18 @@
+{
+  "_note": "Synthetic sample data. Pinewood Holidays, the trip, people and suppliers are fictional.",
+  "operator": "Pinewood Holidays",
+  "trip": "Parvati Valley Trek",
+  "day": 3,
+  "travelers": 20,
+  "organizer": "Anita",
+  "guide": "Tenzin",
+  "today": [
+    { "time": "08:30", "item": "Coach HT-22 leaves Manali for Kasol", "ref": "HT-22" },
+    { "time": "13:00", "item": "Coach HT-22 arrives in Kasol", "ref": "HT-22" },
+    { "time": "14:00", "item": "Check-in at Riverbend Camp", "ref": "riverbend-camp" },
+    { "time": "15:30", "item": "Afternoon trek with guide Tenzin", "ref": "guide-tenzin" }
+  ],
+  "tomorrow": [
+    { "time": "10:00", "item": "Group departs for Tosh", "ref": "tosh-departure" }
+  ]
+}

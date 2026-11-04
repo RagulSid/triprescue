@@ -1,0 +1,46 @@
+{
+  "_note": "Synthetic sample data. Everything in this sheet is CONFIRMED with the supplier.",
+  "currency": "INR",
+  "transport": [
+    {
+      "id": "A",
+      "vehicle": "Two 12-seat tempo travellers",
+      "seats": 24,
+      "route": "Manali to Kasol",
+      "depart": "10:00",
+      "arrive": "15:30",
+      "cost": 18400,
+      "status": "CONFIRMED"
+    },
+    {
+      "id": "B",
+      "vehicle": "State bus",
+      "seats": null,
+      "route": "Manali to Kasol",
+      "depart": "11:15",
+      "arrive": "17:30",
+      "cost": 9000,
+      "status": "CONFIRMED"
+    }
+  ],
+  "hotel": {
+    "id": "riverbend-camp",
+    "name": "Riverbend Camp",
+    "holds_rooms_until": "20:00",
+    "dinner_held_until": "20:30",
+    "status": "CONFIRMED"
+  },
+  "guide": {
+    "id": "guide-tenzin",
+    "name": "Tenzin",
+    "free": "tomorrow 09:00 to 12:00",
+    "status": "CONFIRMED"
+  },
+  "knock_on": {
+    "id": "tosh-departure",
+    "item": "Tosh departure",
+    "can_move_to": "14:00",
+    "extra_cost": 0,
+    "status": "CONFIRMED"
+  }
+}

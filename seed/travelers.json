@@ -1,0 +1,25 @@
+{
+  "_note": "Synthetic sample data. Names are invented; emails use the reserved example.com domain. No phone numbers.",
+  "travelers": [
+    { "id": "t01", "name": "Aarav M.", "email": "t01@example.com" },
+    { "id": "t02", "name": "Bhavna R.", "email": "t02@example.com" },
+    { "id": "t03", "name": "Chirag S.", "email": "t03@example.com" },
+    { "id": "t04", "name": "Divya K.", "email": "t04@example.com" },
+    { "id": "t05", "name": "Eshan P.", "email": "t05@example.com" },
+    { "id": "t06", "name": "Farah N.", "email": "t06@example.com" },
+    { "id": "t07", "name": "Gaurav T.", "email": "t07@example.com" },
+    { "id": "t08", "name": "Harini V.", "email": "t08@example.com" },
+    { "id": "t09", "name": "Ishaan D.", "email": "t09@example.com" },
+    { "id": "t10", "name": "Jaya L.", "email": "t10@example.com" },
+    { "id": "t11", "name": "Kabir A.", "email": "t11@example.com" },
+    { "id": "t12", "name": "Leela G.", "email": "t12@example.com" },
+    { "id": "t13", "name": "Manav J.", "email": "t13@example.com" },
+    { "id": "t14", "name": "Nisha B.", "email": "t14@example.com" },
+    { "id": "t15", "name": "Omkar C.", "email": "t15@example.com" },
+    { "id": "t16", "name": "Pooja H.", "email": "t16@example.com" },
+    { "id": "t17", "name": "Rohan E.", "email": "t17@example.com" },
+    { "id": "t18", "name": "Sana F.", "email": "t18@example.com" },
+    { "id": "t19", "name": "Tanvi W.", "email": "t19@example.com" },
+    { "id": "t20", "name": "Uday Y.", "email": "t20@example.com" }
+  ]
+}

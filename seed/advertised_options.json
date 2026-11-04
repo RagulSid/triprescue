@@ -1,0 +1,16 @@
+{
+  "_note": "Synthetic sample data standing in for a web search result. Nothing here is confirmed with a supplier.",
+  "currency": "INR",
+  "transport": [
+    {
+      "id": "C",
+      "vehicle": "Private coach",
+      "route": "Manali to Kasol",
+      "depart": "09:00",
+      "arrive": "13:30",
+      "cost": 31000,
+      "status": "ADVERTISED ONLY",
+      "source": "simulated web search"
+    }
+  ]
+}
