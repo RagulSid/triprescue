@@ -45,6 +45,8 @@ python scripts/setup.py   # checks Python, seed data, Docker, Claude Code and .e
 python -m unittest discover tests
 ```
 
+On Windows, if agents answer in Switch Console but never in Mattermost, see [WINDOWS.md](WINDOWS.md).
+
 *Channel setup and run steps to be completed.*
 
 ## Sample data
