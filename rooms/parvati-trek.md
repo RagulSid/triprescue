@@ -1,6 +1,7 @@
 # Room instructions: Parvati Trek
 
-**Chat app:** Telegram group (created by hand; Switch cannot create Telegram chats)
+**Chat app:** Mattermost
+Slack and Telegram are planned later; room rules do not depend on the chat app.
 **Members:** travelers and `support-agent`
 
 This is the trip room for the 20 travelers on the Parvati Valley Trek. The support agent answers traveler questions from the trip plan and posts updates once the organizer has approved them. If it does not know an answer, it says so and does not guess.

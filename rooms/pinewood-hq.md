@@ -1,6 +1,7 @@
 # Room instructions: Pinewood HQ
 
-**Chat app:** Slack (`#pinewood-hq`)
+**Chat app:** Mattermost (`#pinewood-hq`)
+Slack and Telegram are planned later; room rules do not depend on the chat app.
 **Members:** the organizer (Anita) and `switchboard-agent`
 
 This is the operator's home base. Disruption rooms escalate here, and each disruption room posts its summary here when it closes.
