@@ -14,25 +14,9 @@ Post one at a time and wait for the result before the next. First run of the day
    @switchboard-agent Scenario: traveler_sick. Message from guide Tenzin, Day 3, 11:20: traveler t07 is unwell and wants to stop the trip and go back to Manali today. They are resting at Riverbend Camp. No medical details are shared here; the organizer is in touch with them directly. Open the disruption room as your instructions describe.
    ```
 
-   Wait for: the private channel 'Parvati Traveler Disruption' opens and switchboard posts "ready to draft one proposal".
+   Wait for: the private channel 'Parvati Traveler Disruption' opens; the specialists answer; switchboard posts a handover note and releases ops-desk; support-agent assumes it and sends you one proposal (no message from you needed).
 
 2. In **'Parvati Traveler Disruption'**:
-
-   ```text
-   @switchboard-agent You're needed on another disruption. Hand the ops desk over to support-agent now, as your instructions describe.
-   ```
-
-   Wait for: support-agent assumes the ops-desk role.
-
-3. In **'Parvati Traveler Disruption'**:
-
-   ```text
-   @ops-desk Send me the proposal.
-   ```
-
-   Wait for: one proposal.
-
-4. In **'Parvati Traveler Disruption'**:
 
    ```text
    @ops-desk Approved with one change: use the 14:00 taxi, and I approve the split: t07 returns to Manali, the other 19 continue. Re-check it before I give final approval.
@@ -40,7 +24,7 @@ Post one at a time and wait for the result before the next. First run of the day
 
    Wait for: the re-checked proposal.
 
-5. In **'Parvati Traveler Disruption'**:
+3. In **'Parvati Traveler Disruption'**:
 
    ```text
    @ops-desk Final approval: approved as re-checked. Record it and tell the travelers.
@@ -48,7 +32,7 @@ Post one at a time and wait for the result before the next. First run of the day
 
    Wait for: "Approval recorded" and support-agent's message to travelers in #parvati-trek.
 
-6. In **#parvati-trek**:
+4. In **#parvati-trek**:
 
    ```text
    @switchboard-agent The plan is approved and the travelers have been told. Close the room as your instructions describe.

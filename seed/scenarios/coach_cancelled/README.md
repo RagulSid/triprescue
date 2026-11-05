@@ -14,25 +14,9 @@ Post one at a time and wait for the result before the next. First run of the day
    @switchboard-agent Scenario: coach_cancelled. Notice from dispatch, Day 3, 06:52: Coach HT-22 (Manali to Kasol, 08:30) is withdrawn for today due to a mechanical fault. We cannot provide a replacement vehicle. Open the disruption room as your instructions describe.
    ```
 
-   Wait for: the private channel 'Parvati Coach Disruption' opens and switchboard posts "ready to draft one proposal".
+   Wait for: the private channel 'Parvati Coach Disruption' opens; the specialists answer; switchboard posts a handover note and releases ops-desk; support-agent assumes it and sends you one proposal (no message from you needed).
 
 2. In **'Parvati Coach Disruption'**:
-
-   ```text
-   @switchboard-agent You're needed on another disruption. Hand the ops desk over to support-agent now, as your instructions describe.
-   ```
-
-   Wait for: support-agent assumes the ops-desk role.
-
-3. In **'Parvati Coach Disruption'**:
-
-   ```text
-   @ops-desk Send me the proposal.
-   ```
-
-   Wait for: one proposal.
-
-4. In **'Parvati Coach Disruption'**:
 
    ```text
    @ops-desk Approved with one change: start tomorrow's trek at 09:30 instead of 09:00. Re-check it before I give final approval.
@@ -40,7 +24,7 @@ Post one at a time and wait for the result before the next. First run of the day
 
    Wait for: the re-checked proposal.
 
-5. In **'Parvati Coach Disruption'**:
+3. In **'Parvati Coach Disruption'**:
 
    ```text
    @ops-desk Final approval: approved as re-checked. Record it and tell the travelers.
@@ -48,7 +32,7 @@ Post one at a time and wait for the result before the next. First run of the day
 
    Wait for: "Approval recorded" and support-agent's message to travelers in #parvati-trek.
 
-6. In **#parvati-trek**:
+4. In **#parvati-trek**:
 
    ```text
    @switchboard-agent The plan is approved and the travelers have been told. Close the room as your instructions describe.

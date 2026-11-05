@@ -48,11 +48,8 @@ def messages(s):
     return [
         ("#parvati-trek (new message)",
          f"@switchboard-agent Scenario: {s['name']}. {s['notice']} Open the disruption room as your instructions describe.",
-         f"the private channel '{s['room_name']}' opens and switchboard posts \"ready to draft one proposal\""),
-        (f"'{s['room_name']}'",
-         "@switchboard-agent You're needed on another disruption. Hand the ops desk over to support-agent now, as your instructions describe.",
-         "support-agent assumes the ops-desk role"),
-        (f"'{s['room_name']}'", "@ops-desk Send me the proposal.", "one proposal"),
+         f"the private channel '{s['room_name']}' opens; the specialists answer; switchboard posts a handover note "
+         "and releases ops-desk; support-agent assumes it and sends you one proposal (no message from you needed)"),
         (f"'{s['room_name']}'",
          f"@ops-desk Approved with one change: {s['organizer_change'][0].lower()}{s['organizer_change'][1:]} Re-check it before I give final approval.",
          "the re-checked proposal"),
