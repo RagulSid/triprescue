@@ -2,7 +2,8 @@
 
 Usage:
   python scripts/run_scenario.py --list
-  python scripts/run_scenario.py <scenario>                    # validate it and print the messages to post
+  python scripts/run_scenario.py <scenario>                    # print the messages to post (same as its README.md)
+  python scripts/run_scenario.py --write-guides                # regenerate seed/scenarios/*/README.md
   python scripts/run_scenario.py <scenario> --check            # clean-start check (local Switch database)
   python scripts/run_scenario.py <scenario> --verify           # verify the latest run in the database
   python scripts/run_scenario.py <scenario> --export DIR       # save the run's messages as evidence
@@ -39,27 +40,55 @@ def load_scenario(name):
     if not path.is_file():
         names = ", ".join(sorted(p.name for p in SCENARIOS.iterdir() if p.is_dir()))
         sys.exit(f"Unknown scenario '{name}'. Available: {names}")
-    s = json.loads(path.read_text(encoding="utf-8"))
-    s["notice_text"] = re.sub(r"<!--.*?-->", "", (path.parent / s["notice"]).read_text(encoding="utf-8"), flags=re.S).strip()
-    return s
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def messages(s):
+    """The exact messages a person posts, in order: (where, text, wait-for)."""
+    return [
+        ("#parvati-trek (new message)",
+         f"@switchboard-agent Scenario: {s['name']}. {s['notice']} Open the disruption room as your instructions describe.",
+         f"the private channel '{s['room_name']}' opens and switchboard posts \"ready to draft one proposal\""),
+        (f"'{s['room_name']}'",
+         "@switchboard-agent You're needed on another disruption. Hand the ops desk over to support-agent now, as your instructions describe.",
+         "support-agent assumes the ops-desk role"),
+        (f"'{s['room_name']}'", "@ops-desk Send me the proposal.", "one proposal"),
+        (f"'{s['room_name']}'",
+         f"@ops-desk Approved with one change: {s['organizer_change'][0].lower()}{s['organizer_change'][1:]} Re-check it before I give final approval.",
+         "the re-checked proposal"),
+        (f"'{s['room_name']}'", "@ops-desk Final approval: approved as re-checked. Record it and tell the travelers.",
+         "\"Approval recorded\" and support-agent's message to travelers in #parvati-trek"),
+        ("#parvati-trek",
+         "@switchboard-agent The plan is approved and the travelers have been told. Close the room as your instructions describe.",
+         "one closing note in #parvati-trek and one summary in #pinewood-hq"),
+    ]
+
+
+def render_guide(s):
+    """README.md for a scenario folder: copy-paste messages first, then the expected outcome."""
+    out = [f"# Scenario: {s['title']} (`{s['name']}`)", "", f"_{s['_note']}_", "",
+           f"The switchboard opens a private room **{s['room_name']}** with the roles "
+           + ", ".join(f"`{r}`" for r in s["roles"]) + ".", "",
+           "## Messages to post (copy each one exactly)", "",
+           "Post one at a time and wait for the result before the next. "
+           "First run of the day only: send `!reset @switchboard-agent` and `!reset @support-agent` in #parvati-trek.", ""]
+    for i, (where, text, wait) in enumerate(messages(s), 1):
+        out += [f"{i}. In **{where}**:", "", "   ```text", f"   {text}", "   ```", "", f"   Wait for: {wait}.", ""]
+    out += ["## Expected outcome", ""] + [f"- {n}" for n in s["expected"]["notes"]] + [
+        "", "## Check it", "", "```text", f"python scripts/run_scenario.py {s['name']} --verify", "```", "",
+        "Run it with the Python inside the local Switch server (see `scripts/run_scenario.py`).", ""]
+    return "\n".join(out)
+
+
+def write_guides():
+    for p in sorted(SCENARIOS.iterdir()):
+        if p.is_dir():
+            (p / "README.md").write_text(render_guide(load_scenario(p.name)), encoding="utf-8")
+            print(f"wrote {(p / 'README.md').relative_to(ROOT).as_posix()}")
 
 
 def print_steps(s):
-    print(f"Scenario: {s['name']} - {s['title']}")
-    print(f"Room the switchboard will open: {s['room_name']} (private)")
-    print(f"Roles: {', '.join(s['roles'])}\n")
-    print("1. In #parvati-trek, post as a new message:\n")
-    print(f"   @switchboard-agent Scenario: {s['name']}. {s['notice_text']} Open the disruption room as your instructions describe.\n")
-    print(f"2. Open the new private channel '{s['room_name']}'. Wait for switchboard's \"ready to draft one proposal\".")
-    print("3. In that channel, post one at a time, waiting for each answer:")
-    print("   a. @switchboard-agent You're needed on another disruption. Hand the ops desk over to support-agent now, as your instructions describe.")
-    print("   b. @ops-desk Send me the proposal.")
-    print(f"   c. @ops-desk Approved with one change: {s['organizer_change']} Re-check it before I give final approval.")
-    print("   d. @ops-desk Final approval: approved as re-checked. Record it and tell the travelers.")
-    print("4. After the travelers' message appears in #parvati-trek, post in #parvati-trek:")
-    print("   @switchboard-agent The plan is approved and the travelers have been told. Close the room as your instructions describe.")
-    print(f"5. Then run: python scripts/run_scenario.py {s['name']} --verify   (with the Switch server's Python)\n")
-    print("Expected outcome:", (SCENARIOS / s["name"] / "expected.md").as_posix())
+    print(render_guide(s))
 
 
 # ---------- database (read-only) ----------
@@ -254,6 +283,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("scenario", nargs="?")
     ap.add_argument("--list", action="store_true")
+    ap.add_argument("--write-guides", action="store_true", help="regenerate seed/scenarios/*/README.md from scenario.json")
     ap.add_argument("--check", action="store_true")
     ap.add_argument("--verify", action="store_true")
     ap.add_argument("--export", metavar="DIR")
@@ -264,6 +294,9 @@ def main():
         for p in sorted(SCENARIOS.iterdir()):
             if p.is_dir():
                 print(f"{p.name:20} {load_scenario(p.name)['title']}")
+        return 0
+    if a.write_guides:
+        write_guides()
         return 0
     if not a.scenario:
         ap.error("name a scenario, or use --list")

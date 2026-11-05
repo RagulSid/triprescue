@@ -3,9 +3,16 @@
   "name": "heavy_rain",
   "title": "Heavy rain cancels the afternoon trek",
   "room_name": "Parvati Rain Disruption",
-  "notice": "notice.md",
-  "roles": ["ops-desk", "transport", "itinerary"],
-  "data_files": ["seed/supplier_sheet.json", "seed/scenarios/heavy_rain/indoor_options.json"],
+  "notice": "Weather alert, Day 3, 12:10 (sample district desk): heavy rain from 14:00 to 20:00 today. The Parvati valley trails are closed this afternoon, so all guided treks are cancelled. Roads to Kasol stay open.",
+  "roles": [
+    "ops-desk",
+    "transport",
+    "itinerary"
+  ],
+  "data_files": [
+    "seed/supplier_sheet.json",
+    "seed/scenarios/heavy_rain/indoor_options.json"
+  ],
   "changed_facts": [
     "Trails are closed 14:00 to 20:00 on Day 3, so the 15:30 trek with Tenzin is cancelled.",
     "The coach, the 14:00 check-in and dinner are not affected."
@@ -15,18 +22,61 @@
     "transport": "Can tomorrow's 10:00 Tosh departure move, and at what cost? Answer from the supplier sheet only."
   },
   "options": [
-    { "id": "R1", "owner": "itinerary", "summary": "Cooking class, 16:00 to 17:30", "cost": 8000, "status": "CONFIRMED", "source": "seed/scenarios/heavy_rain/indoor_options.json" },
-    { "id": "R2", "owner": "itinerary", "summary": "Woodcraft workshop, 16:30 to 18:00", "cost": 5000, "status": "CONFIRMED", "source": "seed/scenarios/heavy_rain/indoor_options.json" },
-    { "id": "R3", "owner": "itinerary", "summary": "Hot-spring pools with transfer, 15:30 to 18:30", "cost": 27000, "status": "ADVERTISED ONLY", "source": "seed/scenarios/heavy_rain/indoor_options.json" },
-    { "id": "T1", "owner": "itinerary", "summary": "Trek tomorrow 09:00 to 12:00 with Tenzin; Tosh departure moves to 14:00", "cost": 0, "status": "CONFIRMED", "source": "seed/supplier_sheet.json" }
+    {
+      "id": "R1",
+      "owner": "itinerary",
+      "summary": "Cooking class, 16:00 to 17:30",
+      "cost": 8000,
+      "status": "CONFIRMED",
+      "source": "seed/scenarios/heavy_rain/indoor_options.json"
+    },
+    {
+      "id": "R2",
+      "owner": "itinerary",
+      "summary": "Woodcraft workshop, 16:30 to 18:00",
+      "cost": 5000,
+      "status": "CONFIRMED",
+      "source": "seed/scenarios/heavy_rain/indoor_options.json"
+    },
+    {
+      "id": "R3",
+      "owner": "itinerary",
+      "summary": "Hot-spring pools with transfer, 15:30 to 18:30",
+      "cost": 27000,
+      "status": "ADVERTISED ONLY",
+      "source": "seed/scenarios/heavy_rain/indoor_options.json"
+    },
+    {
+      "id": "T1",
+      "owner": "itinerary",
+      "summary": "Trek tomorrow 09:00 to 12:00 with Tenzin; Tosh departure moves to 14:00",
+      "cost": 0,
+      "status": "CONFIRMED",
+      "source": "seed/supplier_sheet.json"
+    }
   ],
   "organizer_change": "Do both: the woodcraft workshop today and the trek tomorrow morning.",
   "expected": {
-    "proposal_options": ["R2", "T1"],
-    "blocked_by_cap": ["R3"],
+    "proposal_options": [
+      "R2",
+      "T1"
+    ],
+    "blocked_by_cap": [
+      "R3"
+    ],
     "total_cost_inr": 5000,
     "split_needs_approval": false,
     "travelers_told": "This afternoon's trek is cancelled for rain; indoor activity today and the trek tomorrow 09:00 with Tenzin; Tosh departure moves to 14:00.",
-    "open_items": ["Trek duration inside Tenzin's window", "Seats for 20 on the 14:00 Tosh departure"]
+    "open_items": [
+      "Trek duration inside Tenzin's window",
+      "Seats for 20 on the 14:00 Tosh departure"
+    ],
+    "notes": [
+      "**Itinerary:** today's 15:30 trek is cancelled. Two alternatives: an indoor activity today (R1 cooking class 8,000 INR or R2 woodcraft workshop 5,000 INR, both CONFIRMED), or the trek tomorrow inside Tenzin's 09:00 to 12:00 window (0 INR, CONFIRMED). R3 hot-spring pools (27,000 INR) is ADVERTISED ONLY and BLOCKED BY CAP.",
+      "**Transport:** tomorrow's Tosh departure can move from 10:00 to 14:00 at 0 INR (CONFIRMED); seats for 20 are not in the sheet.",
+      "**Proposal:** one plan, for example R2 today plus the trek tomorrow, within the 25,000 INR cap, group together.",
+      "**Organizer's change:** \"do both\" (workshop today, trek tomorrow); itinerary re-checks.",
+      "**Travelers told:** the approved plan only."
+    ]
   }
 }

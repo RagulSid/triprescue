@@ -3,9 +3,17 @@
   "name": "traveler_sick",
   "title": "One traveler unwell and leaving the trip",
   "room_name": "Parvati Traveler Disruption",
-  "notice": "notice.md",
-  "roles": ["ops-desk", "transport", "hotel", "itinerary"],
-  "data_files": ["seed/supplier_sheet.json", "seed/scenarios/traveler_sick/return_options.json"],
+  "notice": "Message from guide Tenzin, Day 3, 11:20: traveler t07 is unwell and wants to stop the trip and go back to Manali today. They are resting at Riverbend Camp. No medical details are shared here; the organizer is in touch with them directly.",
+  "roles": [
+    "ops-desk",
+    "transport",
+    "hotel",
+    "itinerary"
+  ],
+  "data_files": [
+    "seed/supplier_sheet.json",
+    "seed/scenarios/traveler_sick/return_options.json"
+  ],
   "changed_facts": [
     "Traveler t07 wants to leave the trip and return to Manali today; 19 travelers continue.",
     "Sending one traveler back splits the group, so rule 2 applies: Anita must approve the split explicitly.",
@@ -17,17 +25,53 @@
     "itinerary": "Confirm the rest of the group's plan is unchanged for 19 travelers, and flag that the split needs Anita's explicit approval."
   },
   "options": [
-    { "id": "S1", "owner": "transport", "summary": "Private taxi Kasol to Manali, 14:00 to 18:30", "cost": 4500, "status": "CONFIRMED", "source": "seed/scenarios/traveler_sick/return_options.json" },
-    { "id": "S2", "owner": "transport", "summary": "State bus Kasol to Manali, 15:15 to 21:00, seat not reserved", "cost": 450, "status": "CONFIRMED", "source": "seed/scenarios/traveler_sick/return_options.json" },
-    { "id": "S3", "owner": "transport", "summary": "Helicopter charter", "cost": 95000, "status": "ADVERTISED ONLY", "source": "seed/scenarios/traveler_sick/return_options.json" }
+    {
+      "id": "S1",
+      "owner": "transport",
+      "summary": "Private taxi Kasol to Manali, 14:00 to 18:30",
+      "cost": 4500,
+      "status": "CONFIRMED",
+      "source": "seed/scenarios/traveler_sick/return_options.json"
+    },
+    {
+      "id": "S2",
+      "owner": "transport",
+      "summary": "State bus Kasol to Manali, 15:15 to 21:00, seat not reserved",
+      "cost": 450,
+      "status": "CONFIRMED",
+      "source": "seed/scenarios/traveler_sick/return_options.json"
+    },
+    {
+      "id": "S3",
+      "owner": "transport",
+      "summary": "Helicopter charter",
+      "cost": 95000,
+      "status": "ADVERTISED ONLY",
+      "source": "seed/scenarios/traveler_sick/return_options.json"
+    }
   ],
   "organizer_change": "Use the 14:00 taxi, and I approve the split: t07 returns to Manali, the other 19 continue.",
   "expected": {
-    "proposal_options": ["S1"],
-    "blocked_by_cap": ["S3"],
+    "proposal_options": [
+      "S1"
+    ],
+    "blocked_by_cap": [
+      "S3"
+    ],
     "total_cost_inr": 4500,
     "split_needs_approval": true,
     "travelers_told": "One traveler is returning to Manali today; the plan for everyone else is unchanged. No name and no health details.",
-    "open_items": ["Who accompanies or checks on the traveler is the organizer's call"]
+    "open_items": [
+      "Who accompanies or checks on the traveler is the organizer's call"
+    ],
+    "notes": [
+      "**Transport:** S1 private taxi 14:00 to 18:30 (4,500 INR) and S2 state bus 15:15 to 21:00 (450 INR, seat not reserved), both CONFIRMED; S3 helicopter (95,000 INR) ADVERTISED ONLY and BLOCKED BY CAP.",
+      "**Hotel:** release one room and take one person off the meal count from tonight's dinner, no charge if told by 18:00 (CONFIRMED).",
+      "**Itinerary:** the plan for the other 19 is unchanged.",
+      "**Room rule 2:** sending t07 back splits the group. The proposal must say so and ask Anita to approve the split explicitly; nothing proceeds without it.",
+      "**Proposal:** one plan, S1 taxi, 4,500 of 25,000 INR, split flagged for approval.",
+      "**Organizer's change:** \"use the 14:00 taxi, and I approve the split\".",
+      "**Travelers told:** one traveler is returning; everyone else's plan is unchanged. No name, no health details."
+    ]
   }
 }

@@ -45,7 +45,7 @@ class SeedTests(unittest.TestCase):
 
     def test_emails_use_reserved_domain(self):
         text = "".join(p.read_text(encoding="utf-8") for p in SEED.rglob("*") if p.is_file())
-        domains = set(re.findall(r"@([\w.-]+)", text))
+        domains = set(re.findall(r"\b[\w.+-]+@([\w-]+(?:\.[\w-]+)+)", text))
         self.assertEqual(domains, {"example.com"})
 
 

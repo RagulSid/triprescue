@@ -35,8 +35,8 @@ class ScenarioTests(unittest.TestCase):
             with self.subTest(scenario=path.name):
                 self.assertEqual(s["name"], path.name)
                 self.assertTrue(REQUIRED_KEYS <= set(s), REQUIRED_KEYS - set(s))
-                self.assertTrue((path / s["notice"]).is_file())
-                self.assertTrue((path / "expected.md").is_file())
+                self.assertGreater(len(s["notice"]), 40)
+                self.assertTrue(s["expected"]["notes"])
                 for rel in s["data_files"]:
                     self.assertTrue((ROOT / rel).is_file(), rel)
                     if rel.endswith(".json"):
@@ -51,6 +51,19 @@ class ScenarioTests(unittest.TestCase):
                 for role in s["roles"]:
                     self.assertTrue((ROLES / f"{role}.md").is_file(), role)
                 self.assertEqual(set(s["asks"]), set(s["roles"]) - {"ops-desk"})
+
+    def test_readme_matches_scenario_json(self):
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("run_scenario", ROOT / "scripts" / "run_scenario.py")
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        for path, s in scenarios():
+            with self.subTest(scenario=path.name):
+                readme = (path / "README.md").read_text(encoding="utf-8")
+                self.assertEqual(readme, mod.render_guide(s),
+                                 "README.md is stale: run python scripts/run_scenario.py --write-guides")
+                self.assertLess(readme.index("## Messages to post"), readme.index("## Expected outcome"))
+                self.assertIn(s["notice"], readme)
 
     def test_room_names_are_unique(self):
         names = [s["room_name"] for _, s in scenarios()]

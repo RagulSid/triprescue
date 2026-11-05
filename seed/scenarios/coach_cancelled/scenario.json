@@ -3,9 +3,17 @@
   "name": "coach_cancelled",
   "title": "Coach HT-22 cancelled",
   "room_name": "Parvati Coach Disruption",
-  "notice": "notice.md",
-  "roles": ["ops-desk", "transport", "hotel", "itinerary"],
-  "data_files": ["seed/supplier_sheet.json", "seed/advertised_options.json"],
+  "notice": "Notice from dispatch, Day 3, 06:52: Coach HT-22 (Manali to Kasol, 08:30) is withdrawn for today due to a mechanical fault. We cannot provide a replacement vehicle.",
+  "roles": [
+    "ops-desk",
+    "transport",
+    "hotel",
+    "itinerary"
+  ],
+  "data_files": [
+    "seed/supplier_sheet.json",
+    "seed/advertised_options.json"
+  ],
   "changed_facts": [
     "Coach HT-22 (Manali to Kasol, 08:30) is withdrawn for Day 3; the supplier has no replacement.",
     "The 13:00 arrival, 14:00 check-in and 15:30 trek all depend on that coach."
@@ -16,17 +24,55 @@
     "itinerary": "The rebuilt day; check tomorrow's 10:00 Tosh departure with transport-agent."
   },
   "options": [
-    { "id": "A", "owner": "transport", "summary": "Two 12-seat tempo travellers, 10:00 to 15:30", "cost": 18400, "status": "CONFIRMED", "source": "seed/supplier_sheet.json" },
-    { "id": "B", "owner": "transport", "summary": "State bus, 11:15 to 17:30 (seat count not given)", "cost": 9000, "status": "CONFIRMED", "source": "seed/supplier_sheet.json" },
-    { "id": "C", "owner": "transport", "summary": "Private coach, 09:00 to 13:30", "cost": 31000, "status": "ADVERTISED ONLY", "source": "seed/advertised_options.json" }
+    {
+      "id": "A",
+      "owner": "transport",
+      "summary": "Two 12-seat tempo travellers, 10:00 to 15:30",
+      "cost": 18400,
+      "status": "CONFIRMED",
+      "source": "seed/supplier_sheet.json"
+    },
+    {
+      "id": "B",
+      "owner": "transport",
+      "summary": "State bus, 11:15 to 17:30 (seat count not given)",
+      "cost": 9000,
+      "status": "CONFIRMED",
+      "source": "seed/supplier_sheet.json"
+    },
+    {
+      "id": "C",
+      "owner": "transport",
+      "summary": "Private coach, 09:00 to 13:30",
+      "cost": 31000,
+      "status": "ADVERTISED ONLY",
+      "source": "seed/advertised_options.json"
+    }
   ],
   "organizer_change": "Start tomorrow's trek at 09:30 instead of 09:00.",
   "expected": {
-    "proposal_options": ["A"],
-    "blocked_by_cap": ["C"],
+    "proposal_options": [
+      "A"
+    ],
+    "blocked_by_cap": [
+      "C"
+    ],
     "total_cost_inr": 18400,
     "split_needs_approval": false,
     "travelers_told": "Leave Manali 10:00, arrive Kasol 15:30, check-in and dinner at Riverbend; today's trek moves to tomorrow 09:30 with Tenzin; Tosh departure moves to 14:00.",
-    "open_items": ["Seats for 20 on the 14:00 Tosh departure", "Trek duration inside Tenzin's window", "Kasol to camp transfer time"]
+    "open_items": [
+      "Seats for 20 on the 14:00 Tosh departure",
+      "Trek duration inside Tenzin's window",
+      "Kasol to camp transfer time"
+    ],
+    "notes": [
+      "**Transport:** A (two tempo travellers, 10:00 to 15:30, 18,400 INR) CONFIRMED; B (state bus, 11:15 to 17:30, 9,000 INR) CONFIRMED but no seat count; C (private coach, 31,000 INR) ADVERTISED ONLY and BLOCKED BY CAP.",
+      "**Hotel:** Riverbend Camp holds rooms to 20:00 and dinner to 20:30 (CONFIRMED); A and B both make it.",
+      "**Itinerary:** today's 15:30 trek cannot run; it moves to tomorrow inside Tenzin's 09:00 to 12:00 window, which needs tomorrow's Tosh departure moved from 10:00 to 14:00 (0 INR, CONFIRMED by transport).",
+      "**Proposal:** one plan, Option A, 18,400 of 25,000 INR, group together.",
+      "**Organizer's change:** trek at 09:30; itinerary re-checks; nothing else moves.",
+      "**Travelers told:** the approved times only.",
+      "**Open items for a person:** seats for 20 at 14:00 to Tosh; trek duration; Kasol to camp transfer time."
+    ]
   }
 }
