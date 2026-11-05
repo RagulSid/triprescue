@@ -4,6 +4,10 @@
     "additionalDirectories": [
       "../../seed"
     ],
+    "allow": [
+      "Read(../../seed/**)",
+      "mcp__switch"
+    ],
     "deny": [
       "Read(../../.env)",
       "Read(../../docs/**)",

@@ -1,0 +1,31 @@
+{
+  "_note": "Synthetic sample data. The camp and the vendors are fictional. CONFIRMED items stand in for a supplier sheet; ADVERTISED ONLY items stand in for a web search.",
+  "currency": "INR",
+  "meals": [
+    {
+      "id": "M1",
+      "meal": "Packed lunch boxes from a Kasol bakery, delivered to the camp",
+      "servings": 20,
+      "time": "13:30",
+      "cost": 6000,
+      "status": "CONFIRMED"
+    },
+    {
+      "id": "M2",
+      "meal": "Evening snack at the camp after the trek (tea, pakoras, fruit)",
+      "servings": 20,
+      "time": "18:30",
+      "cost": 3500,
+      "status": "CONFIRMED"
+    },
+    {
+      "id": "M3",
+      "meal": "Catered hot lunch driven in from a Manali hotel",
+      "servings": 20,
+      "time": "14:30",
+      "cost": 26000,
+      "status": "ADVERTISED ONLY",
+      "source": "simulated web search"
+    }
+  ]
+}

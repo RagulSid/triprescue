@@ -1,0 +1,34 @@
+{
+  "_note": "Synthetic sample data. The venues are fictional. CONFIRMED items stand in for a supplier sheet; ADVERTISED ONLY items stand in for a web search.",
+  "currency": "INR",
+  "activities": [
+    {
+      "id": "R1",
+      "activity": "Himachali cooking class, Kasol cafe (indoor)",
+      "seats": 20,
+      "start": "16:00",
+      "end": "17:30",
+      "cost": 8000,
+      "status": "CONFIRMED"
+    },
+    {
+      "id": "R2",
+      "activity": "Woodcraft workshop, Chalal village hall (indoor, 10 minutes' walk)",
+      "seats": 20,
+      "start": "16:30",
+      "end": "18:00",
+      "cost": 5000,
+      "status": "CONFIRMED"
+    },
+    {
+      "id": "R3",
+      "activity": "Covered hot-spring pools, Manikaran, with private transfer",
+      "seats": 20,
+      "start": "15:30",
+      "end": "18:30",
+      "cost": 27000,
+      "status": "ADVERTISED ONLY",
+      "source": "simulated web search"
+    }
+  ]
+}

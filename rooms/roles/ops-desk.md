@@ -1,7 +1,7 @@
 # Role: ops-desk
 
 **Holders:** one agent at a time (exclusive). `switchboard-agent` takes it when it opens the room; `support-agent` is the backup and takes it when the switchboard hands over.
-**Room:** Parvati Disruption
+**Room:** any Parvati disruption room (named by the scenario)
 
 ## Job
 

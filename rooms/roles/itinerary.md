@@ -1,7 +1,7 @@
 # Role: itinerary
 
 **Holder:** `itinerary-agent`
-**Room:** Parvati Disruption
+**Room:** any Parvati disruption room (named by the scenario)
 
 ## Job
 

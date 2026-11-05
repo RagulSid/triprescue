@@ -1,0 +1,33 @@
+{
+  "_note": "Synthetic sample data. Pinewood Holidays, the trip, people and suppliers are fictional. Logistics only: no medical details or advice.",
+  "name": "traveler_sick",
+  "title": "One traveler unwell and leaving the trip",
+  "room_name": "Parvati Traveler Disruption",
+  "notice": "notice.md",
+  "roles": ["ops-desk", "transport", "hotel", "itinerary"],
+  "data_files": ["seed/supplier_sheet.json", "seed/scenarios/traveler_sick/return_options.json"],
+  "changed_facts": [
+    "Traveler t07 wants to leave the trip and return to Manali today; 19 travelers continue.",
+    "Sending one traveler back splits the group, so rule 2 applies: Anita must approve the split explicitly.",
+    "Logistics only. Agents do not discuss the traveler's health, give medical advice or name the traveler in the trip room."
+  ],
+  "asks": {
+    "transport": "Return options for one traveler from Kasol to Manali today from seed/scenarios/traveler_sick/return_options.json, with times, cost and label, and what the cap blocks.",
+    "hotel": "What changes at Riverbend Camp for one fewer traveler (room and meals), with the deadline and label.",
+    "itinerary": "Confirm the rest of the group's plan is unchanged for 19 travelers, and flag that the split needs Anita's explicit approval."
+  },
+  "options": [
+    { "id": "S1", "owner": "transport", "summary": "Private taxi Kasol to Manali, 14:00 to 18:30", "cost": 4500, "status": "CONFIRMED", "source": "seed/scenarios/traveler_sick/return_options.json" },
+    { "id": "S2", "owner": "transport", "summary": "State bus Kasol to Manali, 15:15 to 21:00, seat not reserved", "cost": 450, "status": "CONFIRMED", "source": "seed/scenarios/traveler_sick/return_options.json" },
+    { "id": "S3", "owner": "transport", "summary": "Helicopter charter", "cost": 95000, "status": "ADVERTISED ONLY", "source": "seed/scenarios/traveler_sick/return_options.json" }
+  ],
+  "organizer_change": "Use the 14:00 taxi, and I approve the split: t07 returns to Manali, the other 19 continue.",
+  "expected": {
+    "proposal_options": ["S1"],
+    "blocked_by_cap": ["S3"],
+    "total_cost_inr": 4500,
+    "split_needs_approval": true,
+    "travelers_told": "One traveler is returning to Manali today; the plan for everyone else is unchanged. No name and no health details.",
+    "open_items": ["Who accompanies or checks on the traveler is the organizer's call"]
+  }
+}

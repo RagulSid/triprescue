@@ -5,6 +5,11 @@
       "../../seed",
       "../../rooms"
     ],
+    "allow": [
+      "Read(../../seed/**)",
+      "Read(../../rooms/**)",
+      "mcp__switch"
+    ],
     "deny": [
       "Read(../../.env)",
       "Read(../../docs/**)",

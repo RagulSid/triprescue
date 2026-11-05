@@ -1,7 +1,7 @@
 # Role: hotel
 
 **Holder:** `hotel-agent`
-**Room:** Parvati Disruption
+**Room:** any Parvati disruption room (named by the scenario)
 
 ## Job
 

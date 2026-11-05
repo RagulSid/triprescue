@@ -1,0 +1,46 @@
+{
+  "_note": "Synthetic sample data. Logistics only; nothing here is medical advice. Vendors and the clinic are fictional. CONFIRMED items stand in for a supplier sheet; ADVERTISED ONLY items stand in for a web search.",
+  "currency": "INR",
+  "transport": [
+    {
+      "id": "S1",
+      "vehicle": "Private taxi, Kasol to Manali (one traveler)",
+      "seats": 4,
+      "depart": "14:00",
+      "arrive": "18:30",
+      "cost": 4500,
+      "status": "CONFIRMED"
+    },
+    {
+      "id": "S2",
+      "vehicle": "State bus, Kasol to Manali (seat not reserved)",
+      "seats": null,
+      "depart": "15:15",
+      "arrive": "21:00",
+      "cost": 450,
+      "status": "CONFIRMED"
+    },
+    {
+      "id": "S3",
+      "vehicle": "Helicopter charter, Bhuntar to Manali",
+      "seats": 5,
+      "depart": "15:00",
+      "arrive": "15:40",
+      "cost": 95000,
+      "status": "ADVERTISED ONLY",
+      "source": "simulated web search"
+    }
+  ],
+  "hotel": {
+    "id": "riverbend-one-room",
+    "change": "Release one room for the remaining nights and take one person off the meal count from tonight's dinner, no charge if told by 18:00",
+    "cost": 0,
+    "status": "CONFIRMED"
+  },
+  "sample_clinic": {
+    "sample": true,
+    "name": "Sample Health Post, Kasol (SAMPLE DATA: fictional, not a real facility)",
+    "hours": "09:00 to 17:00",
+    "status": "SAMPLE DATA"
+  }
+}

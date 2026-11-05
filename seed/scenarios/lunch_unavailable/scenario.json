@@ -1,0 +1,31 @@
+{
+  "_note": "Synthetic sample data. Pinewood Holidays, the trip, people and suppliers are fictional.",
+  "name": "lunch_unavailable",
+  "title": "Camp kitchen cannot serve lunch",
+  "room_name": "Parvati Lunch Disruption",
+  "notice": "notice.md",
+  "roles": ["ops-desk", "hotel", "itinerary"],
+  "data_files": ["seed/supplier_sheet.json", "seed/scenarios/lunch_unavailable/meal_options.json"],
+  "changed_facts": [
+    "Riverbend Camp cannot serve lunch on Day 3; dinner is not affected.",
+    "The group arrives 13:00, checks in 14:00 and treks at 15:30."
+  ],
+  "asks": {
+    "hotel": "Meal options from seed/scenarios/lunch_unavailable/meal_options.json with time, cost and label, and what the 25,000 INR cap blocks. Propose an evening snack within the cap.",
+    "itinerary": "Which meal times fit around the 14:00 check-in and the 15:30 trek? Check with hotel-agent."
+  },
+  "options": [
+    { "id": "M1", "owner": "hotel", "summary": "Packed lunch boxes, 13:30", "cost": 6000, "status": "CONFIRMED", "source": "seed/scenarios/lunch_unavailable/meal_options.json" },
+    { "id": "M2", "owner": "hotel", "summary": "Evening snack after the trek, 18:30", "cost": 3500, "status": "CONFIRMED", "source": "seed/scenarios/lunch_unavailable/meal_options.json" },
+    { "id": "M3", "owner": "hotel", "summary": "Catered hot lunch from Manali, 14:30", "cost": 26000, "status": "ADVERTISED ONLY", "source": "seed/scenarios/lunch_unavailable/meal_options.json" }
+  ],
+  "organizer_change": "Add the packed lunch boxes as well as the evening snack.",
+  "expected": {
+    "proposal_options": ["M2"],
+    "blocked_by_cap": ["M3"],
+    "total_cost_inr": 3500,
+    "split_needs_approval": false,
+    "travelers_told": "No lunch at the camp today; an evening snack at 18:30 after the trek; dinner as planned.",
+    "open_items": []
+  }
+}
