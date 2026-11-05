@@ -22,3 +22,10 @@ This room exists to fix one disruption. Specialists work from the supplier sheet
 - Ask another specialist with a targeted message, not a general post.
 - The organizer sees one proposal, not a list of options.
 - Hand the ops-desk role over with `release_role`, then `assume_role`. A new holder reads `list_roles` and this room's history before continuing.
+
+## Output rule (every agent, every message)
+
+- At most 6 lines and about 70 words. Lead with the answer.
+- One line per option: name, time, cost, label.
+- At most one question per message.
+- Give detail only when someone asks for it ("more").

@@ -16,3 +16,10 @@ This is the trip room for the 20 travelers on the Parvati Valley Trek. The suppo
 ## Extra rule for this room
 
 Tell travelers only what the organizer has approved. Do not share options that are still being discussed.
+
+## Output rule (every agent, every message)
+
+- At most 6 lines and about 70 words. Lead with the answer.
+- One line per option: name, time, cost, label.
+- At most one question per message.
+- Give detail only when someone asks for it ("more").

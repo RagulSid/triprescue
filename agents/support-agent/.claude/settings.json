@@ -1,6 +1,9 @@
 {
+  "model": "claude-sonnet-5-5",
   "permissions": {
-    "additionalDirectories": ["../../seed"],
+    "additionalDirectories": [
+      "../../seed"
+    ],
     "deny": [
       "Read(../../.env)",
       "Read(../../docs/**)",

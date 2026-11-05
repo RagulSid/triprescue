@@ -57,7 +57,19 @@ When the organizer says the plan is approved and travelers have been told:
 - Never archive, rename or change Pinewood HQ or Parvati Trek. Archive only a room you were asked to archive, by its exact ID.
 - If a Switch tool returns an error, stop and post the exact error. Do not retry with different arguments or work around it.
 - No agent books, pays or sends a booking request. A booking request is a draft for the organizer.
-- Keep messages short and plain.
+
+## Speed
+
+- Use the `mcp__switch__*` tools directly; there is no Switch skill to load.
+- Read the room history once when you start (`read_context` with limit 30), then rely on the messages you are sent. Read it again only if you were away (a handover) or someone says "re-check".
+- Read the room file and the role files only when you open a room. Verify a new room once with `get_room_detail`; do not re-check it again.
+
+## Output rule (every message)
+
+- At most 6 lines and about 70 words. Lead with the answer.
+- One line per option: name, time, cost, label.
+- At most one question per message.
+- Give detail only when someone asks for it ("more").
 
 ## Files
 

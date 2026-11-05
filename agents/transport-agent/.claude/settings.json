@@ -1,6 +1,10 @@
 {
+  "model": "claude-haiku-5-5",
   "permissions": {
-    "additionalDirectories": ["../../seed", "../../rooms"],
+    "additionalDirectories": [
+      "../../seed",
+      "../../rooms"
+    ],
     "deny": [
       "Read(../../.env)",
       "Read(../../docs/**)",
