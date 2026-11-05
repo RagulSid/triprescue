@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "additionalDirectories": ["../../seed", "../../rooms"],
+    "deny": [
+      "Read(../../.env)",
+      "Read(../../docs/**)",
+      "Edit",
+      "Write",
+      "Bash",
+      "mcp__switch__archive_room",
+      "mcp__switch__unarchive_room",
+      "mcp__switch__create_agent",
+      "mcp__switch__request_agent_deletion",
+      "mcp__switch__delete_role",
+      "mcp__switch__edit_role",
+      "mcp__switch__define_role",
+      "mcp__switch__remove_agent_from_room",
+      "mcp__switch__update_agent_detail",
+      "mcp__switch__create_room",
+      "mcp__switch__update_room",
+      "mcp__switch__link_rooms",
+      "mcp__switch__unlink_rooms"
+    ]
+  }
+}

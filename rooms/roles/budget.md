@@ -1,12 +1,3 @@
-# Role: budget
+# Role: budget (cut)
 
-**Holder:** `budget-agent`
-**Room:** Parvati Disruption
-
-## Job
-
-- Apply the room's contingency cap (25,000 INR per disruption) to every option.
-- Block any option over the cap and say why, with the numbers.
-- Report the total cost of the final proposal.
-
-If this role is cut for time, the ops desk applies the cap itself.
+Cut on Nov 5 2026. There is no budget agent and no budget role. The 25,000 INR cap is rule 1 in the Parvati Disruption room instructions; the transport agent marks over-cap options BLOCKED BY CAP and the ops desk checks the proposal's total.

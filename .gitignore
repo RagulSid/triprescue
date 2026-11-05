@@ -4,6 +4,7 @@
 # Private planning notes (kept locally, never committed)
 docs/
 /CLAUDE.md
+chats.md
 
 # Local Claude Code settings
 .claude/settings.local.json

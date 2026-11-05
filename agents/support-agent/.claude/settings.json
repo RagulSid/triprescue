@@ -6,7 +6,17 @@
       "Read(../../docs/**)",
       "Edit",
       "Write",
-      "Bash"
+      "Bash",
+      "mcp__switch__archive_room",
+      "mcp__switch__unarchive_room",
+      "mcp__switch__create_agent",
+      "mcp__switch__request_agent_deletion",
+      "mcp__switch__delete_role",
+      "mcp__switch__edit_role",
+      "mcp__switch__define_role",
+      "mcp__switch__delete_room_document",
+      "mcp__switch__remove_agent_from_room",
+      "mcp__switch__update_agent_detail"
     ]
   }
 }

@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "additionalDirectories": ["../../seed", "../../rooms"],
+    "deny": [
+      "Read(../../.env)",
+      "Read(../../docs/**)",
+      "Edit",
+      "Write",
+      "Bash"
+    ]
+  }
+}
