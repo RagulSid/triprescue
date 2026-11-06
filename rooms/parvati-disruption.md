@@ -3,7 +3,7 @@
 **Chat app:** Mattermost (created by `switchboard-agent` when a cancellation arrives)
 Slack and Telegram are planned later; room rules do not depend on the chat app.
 **Links:** Parvati Trek (parent trip), Pinewood HQ (escalation)
-**Members:** the organizer (Anita), the ops-desk holder and the specialists (`transport-agent`, `hotel-agent`, `itinerary-agent`)
+**Members:** the organizer (Ragul), the ops-desk holder and the specialists (`transport-agent`, `hotel-agent`, `itinerary-agent`)
 **Reference:** the supplier sheet (`seed/supplier_sheet.json`)
 
 This room exists to fix one disruption. Specialists work from the supplier sheet, the ops desk assembles one proposal, and the organizer approves it. When the plan is approved and travelers are told, the room is archived and a summary is posted to Pinewood HQ and Parvati Trek.
