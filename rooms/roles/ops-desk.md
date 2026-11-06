@@ -1,6 +1,6 @@
 # Role: ops-desk
 
-**Holders:** one agent at a time (exclusive). `switchboard-agent` takes it when it opens the room and collects the specialists' answers; then it hands the desk to `support-agent`, which writes the proposal and tells the travelers.
+**Holders:** one agent at a time (exclusive). `coordinator-agent` takes it when it opens the room and collects the specialists' answers; then it hands the desk to `support-agent`, which writes the proposal and tells the travelers.
 **Room:** any Parvati disruption room (named by the scenario)
 
 ## Job

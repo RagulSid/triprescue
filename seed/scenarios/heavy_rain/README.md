@@ -2,19 +2,19 @@
 
 _Synthetic sample data. Pinewood Holidays, the trip, people and suppliers are fictional._
 
-switchboard-agent opens a private room **Parvati Rain Disruption** with the roles `ops-desk`, `transport`, `itinerary`.
+coordinator-agent opens a private room **Parvati Rain Disruption** with the roles `ops-desk`, `transport`, `itinerary`.
 
 ## Messages to post (copy each one exactly)
 
-Post one at a time and wait for the result before the next. First run of the day only: send `!reset @switchboard-agent` and `!reset @support-agent` in the trip room.
+Post one at a time and wait for the result before the next. First run of the day only: send `!reset @coordinator-agent` and `!reset @support-agent` in the trip room.
 
 1. In **the trip room (#parvati-trek, or your Telegram group)**:
 
    ```text
-   @switchboard-agent Weather alert: heavy rain from 14:00 to 20:00 today and the trails are closed, so the 15:30 trek with Tenzin is off. Can you rework the afternoon?
+   @coordinator-agent Weather alert: heavy rain from 14:00 to 20:00 today and the trails are closed, so the 15:30 trek with Tenzin is off. Can you rework the afternoon?
    ```
 
-   Wait for: one plain sentence back in the trip room; the private channel 'Parvati Rain Disruption' opens; the specialists answer; switchboard-agent posts a handover note and releases ops-desk; support-agent assumes it and sends you one proposal (no message from you needed).
+   Wait for: one plain sentence back in the trip room; the private channel 'Parvati Rain Disruption' opens; the specialists answer; coordinator-agent posts a handover note and releases ops-desk; support-agent assumes it and sends you one proposal (no message from you needed).
 
 2. In **'Parvati Rain Disruption'**:
 
@@ -35,7 +35,7 @@ Post one at a time and wait for the result before the next. First run of the day
 4. In **the trip room (#parvati-trek, or your Telegram group)**:
 
    ```text
-   @switchboard-agent The plan is approved and the travelers have been told. Please close the disruption room.
+   @coordinator-agent The plan is approved and the travelers have been told. Please close the disruption room.
    ```
 
    Wait for: one closing note in the trip room and one summary in #pinewood-hq.
@@ -44,8 +44,8 @@ Post one at a time and wait for the result before the next. First run of the day
 
 This scenario: Heavy rain closes the valley trails this afternoon, so today's guided trek cannot run; roads stay open. The coordinator matches your own words to it, so any of these work as message 1:
 
-- `@switchboard-agent It's going to pour this afternoon and the valley trails are shut. What do we do instead of the trek?`
-- `@switchboard-agent Rain has cancelled today's trek. The roads to Kasol are fine.`
+- `@coordinator-agent It's going to pour this afternoon and the valley trails are shut. What do we do instead of the trek?`
+- `@coordinator-agent Rain has cancelled today's trek. The roads to Kasol are fine.`
 
 If it is unsure, it asks one short question; answer it in the same thread. To force this scenario, add a line `Scenario: heavy_rain`.
 
@@ -62,7 +62,7 @@ If it is unsure, it asks one short question; answer it in the same thread. To fo
 - The coordinator answers in the trip room with one plain sentence (no scenario name, room id or tool name).
 - A private channel **Parvati Rain Disruption** appears; a traveler account cannot see it.
 - Options over 25,000 INR are marked BLOCKED BY CAP and left out of the proposal (here: R3).
-- switchboard-agent posts a handover note and releases `ops-desk`; support-agent assumes it and sends one proposal without being asked.
+- coordinator-agent posts a handover note and releases `ops-desk`; support-agent assumes it and sends one proposal without being asked.
 - After your final approval there is a line starting `Approval recorded:`, and the trip room gets the approved times only (no options, names or health details).
 - On close: one note in the trip room, one summary in #pinewood-hq, and the room shows as archived in Switch Console.
 

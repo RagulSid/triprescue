@@ -2,19 +2,19 @@
 
 _Synthetic sample data. Pinewood Holidays, the trip, people and suppliers are fictional._
 
-switchboard-agent opens a private room **Parvati Coach Disruption** with the roles `ops-desk`, `transport`, `hotel`, `itinerary`.
+coordinator-agent opens a private room **Parvati Coach Disruption** with the roles `ops-desk`, `transport`, `hotel`, `itinerary`.
 
 ## Messages to post (copy each one exactly)
 
-Post one at a time and wait for the result before the next. First run of the day only: send `!reset @switchboard-agent` and `!reset @support-agent` in the trip room.
+Post one at a time and wait for the result before the next. First run of the day only: send `!reset @coordinator-agent` and `!reset @support-agent` in the trip room.
 
 1. In **the trip room (#parvati-trek, or your Telegram group)**:
 
    ```text
-   @switchboard-agent Dispatch just called: coach HT-22 to Kasol is withdrawn today with a mechanical fault, and they have no replacement vehicle. Can you sort out a new plan?
+   @coordinator-agent Dispatch just called: coach HT-22 to Kasol is withdrawn today with a mechanical fault, and they have no replacement vehicle. Can you sort out a new plan?
    ```
 
-   Wait for: one plain sentence back in the trip room; the private channel 'Parvati Coach Disruption' opens; the specialists answer; switchboard-agent posts a handover note and releases ops-desk; support-agent assumes it and sends you one proposal (no message from you needed).
+   Wait for: one plain sentence back in the trip room; the private channel 'Parvati Coach Disruption' opens; the specialists answer; coordinator-agent posts a handover note and releases ops-desk; support-agent assumes it and sends you one proposal (no message from you needed).
 
 2. In **'Parvati Coach Disruption'**:
 
@@ -35,7 +35,7 @@ Post one at a time and wait for the result before the next. First run of the day
 4. In **the trip room (#parvati-trek, or your Telegram group)**:
 
    ```text
-   @switchboard-agent The plan is approved and the travelers have been told. Please close the disruption room.
+   @coordinator-agent The plan is approved and the travelers have been told. Please close the disruption room.
    ```
 
    Wait for: one closing note in the trip room and one summary in #pinewood-hq.
@@ -44,8 +44,8 @@ Post one at a time and wait for the result before the next. First run of the day
 
 This scenario: The Manali to Kasol coach (HT-22) is cancelled for today and the supplier has no replacement. The coordinator matches your own words to it, so any of these work as message 1:
 
-- `@switchboard-agent Our 08:30 coach from Manali is cancelled. How do we get everyone to Kasol today?`
-- `@switchboard-agent Bad news: the bus to Kasol broke down this morning and the supplier can't replace it.`
+- `@coordinator-agent Our 08:30 coach from Manali is cancelled. How do we get everyone to Kasol today?`
+- `@coordinator-agent Bad news: the bus to Kasol broke down this morning and the supplier can't replace it.`
 
 If it is unsure, it asks one short question; answer it in the same thread. To force this scenario, add a line `Scenario: coach_cancelled`.
 
@@ -64,7 +64,7 @@ If it is unsure, it asks one short question; answer it in the same thread. To fo
 - The coordinator answers in the trip room with one plain sentence (no scenario name, room id or tool name).
 - A private channel **Parvati Coach Disruption** appears; a traveler account cannot see it.
 - Options over 25,000 INR are marked BLOCKED BY CAP and left out of the proposal (here: C).
-- switchboard-agent posts a handover note and releases `ops-desk`; support-agent assumes it and sends one proposal without being asked.
+- coordinator-agent posts a handover note and releases `ops-desk`; support-agent assumes it and sends one proposal without being asked.
 - After your final approval there is a line starting `Approval recorded:`, and the trip room gets the approved times only (no options, names or health details).
 - On close: one note in the trip room, one summary in #pinewood-hq, and the room shows as archived in Switch Console.
 

@@ -33,7 +33,7 @@ ROOT = Path(__file__).resolve().parent.parent
 SCENARIOS = ROOT / "seed" / "scenarios"
 ENV = Path(os.path.expandvars(r"%APPDATA%\switchdash\local-switch-server\native\run\switch-core.env"))
 ROLE_AGENT = {"transport": "transport-agent", "hotel": "hotel-agent", "itinerary": "itinerary-agent"}
-COORDINATOR = "switchboard-agent"  # opens, hands over and closes disruption rooms
+COORDINATOR = "coordinator-agent"  # opens, hands over and closes disruption rooms
 INDEX = SCENARIOS / "index.json"
 TRIP_LABEL = "the trip room (#parvati-trek, or your Telegram group)"
 

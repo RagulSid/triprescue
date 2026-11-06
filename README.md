@@ -30,9 +30,9 @@ Pinewood Holidays, the Parvati Valley Trek, its travelers and its suppliers are 
 
 ```mermaid
 flowchart TD
-    N["Organizer posts the disruption notice<br/>in #parvati-trek, addressed to @switchboard-agent"]
-    N --> R["switchboard-agent creates a PRIVATE disruption room:<br/>room rules, roles, links to Trek and HQ, supplier sheet"]
-    R --> O["switchboard-agent takes the ops-desk role<br/>and sends each specialist its ask"]
+    N["Organizer posts the disruption notice<br/>in #parvati-trek, addressed to @coordinator-agent"]
+    N --> R["coordinator-agent creates a PRIVATE disruption room:<br/>room rules, roles, links to Trek and HQ, supplier sheet"]
+    R --> O["coordinator-agent takes the ops-desk role<br/>and sends each specialist its ask"]
     O --> T1["transport-agent"]
     O --> T2["hotel-agent"]
     O --> T3["itinerary-agent<br/>(checks knock-ons with transport)"]
@@ -40,7 +40,7 @@ flowchart TD
     T2 --> CAP
     T3 --> CAP
     CAP -->|over the cap| BLK["BLOCKED BY CAP<br/>never proposed"]
-    CAP --> H["Handover: switchboard-agent releases ops-desk;<br/>support-agent assumes it and reads the room history"]
+    CAP --> H["Handover: coordinator-agent releases ops-desk;<br/>support-agent assumes it and reads the room history"]
     H --> P["One proposal to the organizer"]
     P --> A{"Organizer approves,<br/>or changes one detail"}
     A -->|change| RC["Specialist re-checks"] --> P
@@ -57,7 +57,7 @@ The organizer types four messages per disruption: the notice, one change, the fi
 | --- | --- |
 | **Rooms** | Pinewood HQ (operator base), Parvati Trek (travelers), and one disruption room per incident, created by an agent with `create_room` and private, so travelers never see options under discussion. |
 | **Room instructions** | The four business rules (cost cap, keep the group together, agents propose / organizer approves, label every option) are written once in [`rooms/parvati-disruption.md`](rooms/parvati-disruption.md) and read by every agent in the room. No rule is in code. |
-| **Roles** | `ops-desk`, `transport`, `hotel`, `itinerary` ([`rooms/roles/`](rooms/roles/)). The ops desk is a job, not an agent: switchboard-agent holds it while answers come in, then releases it, and support-agent assumes it and continues from the room history. |
+| **Roles** | `ops-desk`, `transport`, `hotel`, `itinerary` ([`rooms/roles/`](rooms/roles/)). The ops desk is a job, not an agent: coordinator-agent holds it while answers come in, then releases it, and support-agent assumes it and continues from the room history. |
 | **Linked rooms** | Each disruption room links to Parvati Trek (`parent trip`) and Pinewood HQ (`escalation`), so agents know where to tell travelers and where to report. |
 | **References** | The supplier sheet is attached to the disruption room as a reference. |
 | **Targeted messages** | Agents ask each other with `send_targeted_message` (by name, or by role such as `@ops-desk`). Only addressed messages wake an agent, so each one works when asked and stays quiet otherwise. |
@@ -73,7 +73,7 @@ All five are existing Claude Code agents run by Switch Console. Each one's brief
 
 | Agent | Model | Job | Cannot |
 | --- | --- | --- | --- |
-| [`switchboard-agent`](agents/switchboard-agent/CLAUDE.md) | claude-sonnet-5-5 | Opens the disruption room from the scenario file, holds ops-desk while specialists answer, hands over, closes and archives | Edit files, run commands |
+| [`coordinator-agent`](agents/coordinator-agent/CLAUDE.md) | claude-sonnet-5-5 | Opens the disruption room from the scenario file, holds ops-desk while specialists answer, hands over, closes and archives | Edit files, run commands |
 | [`support-agent`](agents/support-agent/CLAUDE.md) | claude-sonnet-5-5 | Answers travelers from the trip plan, takes over ops-desk, writes the single proposal, tells travelers the approved plan | Create, link or archive rooms, invite agents |
 | [`transport-agent`](agents/transport-agent/CLAUDE.md) | claude-haiku-5-5 | Replacement transport from the supplier sheet, labelled CONFIRMED or ADVERTISED ONLY | Create, link or archive rooms |
 | [`hotel-agent`](agents/hotel-agent/CLAUDE.md) | claude-haiku-5-5 | Late check-in, meal and room changes | Create, link or archive rooms |
@@ -116,7 +116,7 @@ In Switch Console: **Your Agents** → the **+** card. Fill in the form once per
 
 | Field | Value |
 | --- | --- |
-| Name | `switchboard-agent`, `support-agent`, `transport-agent`, `hotel-agent`, `itinerary-agent` |
+| Name | `coordinator-agent`, `support-agent`, `transport-agent`, `hotel-agent`, `itinerary-agent` |
 | Description | One line from [`agents/agents.json`](agents/agents.json) |
 | Agent instructions | From `agents/agents.json`. Each is a short pointer like "Follow CLAUDE.md in your directory." The real brief is the folder's `CLAUDE.md`. |
 | Run location | This computer |
@@ -131,15 +131,15 @@ In Switch Console: **Your Rooms** → **Create room**, messaging app **Mattermos
 
 | Name | Agents | Instructions (paste the whole file) |
 | --- | --- | --- |
-| `Pinewood HQ` | switchboard-agent | [`rooms/pinewood-hq.md`](rooms/pinewood-hq.md) |
-| `Parvati Trek` | support-agent, switchboard-agent | [`rooms/parvati-trek.md`](rooms/parvati-trek.md) |
+| `Pinewood HQ` | coordinator-agent | [`rooms/pinewood-hq.md`](rooms/pinewood-hq.md) |
+| `Parvati Trek` | support-agent, coordinator-agent | [`rooms/parvati-trek.md`](rooms/parvati-trek.md) |
 
-The names must match exactly: switchboard-agent finds these rooms by the names in [`rooms/rooms.json`](rooms/rooms.json). Disruption rooms are created by the agent, not by you.
+The names must match exactly: coordinator-agent finds these rooms by the names in [`rooms/rooms.json`](rooms/rooms.json). Disruption rooms are created by the agent, not by you.
 
 **Travelers on Telegram (optional):**
 1. In BotFather, turn Group Privacy off before the bot joins any chat.
 2. Connect Telegram in Console, and leave Mattermost as the default for new rooms.
-3. Add the bot to your Telegram group and invite `support-agent` and `switchboard-agent` there.
+3. Add the bot to your Telegram group and invite `support-agent` and `coordinator-agent` there.
 4. Create `rooms/rooms.local.json` (gitignored) with `{"trip_room": "<the group's room name exactly as Console shows it>"}`.
 
 Disruption rooms stay private on Mattermost and link to the Telegram room. Nothing is renamed or archived.
@@ -154,7 +154,7 @@ Check: type `!list-agents` in `#parvati-trek` and it lists the agents.
 
 In Switch Console, use **Templates** → **Import template**, then **Use**.
 
-Switch's own template planner accepts it offline. We have **not** run it in Console, so follow steps 4 and 5 if it fails. Do not run it where the agents or rooms already exist: two rooms named `Parvati Trek` would stop the switchboard.
+Switch's own template planner accepts it offline. We have **not** run it in Console, so follow steps 4 and 5 if it fails. Do not run it where the agents or rooms already exist: two rooms named `Parvati Trek` would stop the coordinator.
 
 ## Run a scenario
 
@@ -172,7 +172,7 @@ In short:
 2. Wait for the proposal in the new private room.
 3. Approve with one change.
 4. Give final approval.
-5. Ask the switchboard to close the room.
+5. Ask the coordinator to close the room.
 
 Run one scenario at a time. On our machine a full run took about 6 to 14 minutes and about 5 to 7 agent sessions.
 
@@ -192,8 +192,8 @@ Everything in [`seed/`](seed/) is synthetic: the operator, trip, travelers, supp
 
 ## Known limits
 
-- **The handover is explicit.** Switch never reassigns a role by itself, and a role lease survives an agent going offline. switchboard-agent calls `release_role` and support-agent calls `assume_role`, both by instruction. Each agent holds one role at a time across all rooms, so run one scenario at a time.
-- **Address agents with an @mention.** Only addressed messages wake an agent. In our tests a Mattermost post without an @mention sometimes did not reach the agents at all; the cause is **Unverified**. Every message in the guides starts with `@switchboard-agent` or `@ops-desk`.
+- **The handover is explicit.** Switch never reassigns a role by itself, and a role lease survives an agent going offline. coordinator-agent calls `release_role` and support-agent calls `assume_role`, both by instruction. Each agent holds one role at a time across all rooms, so run one scenario at a time.
+- **Address agents with an @mention.** Only addressed messages wake an agent. In our tests a Mattermost post without an @mention sometimes did not reach the agents at all; the cause is **Unverified**. Every message in the guides starts with `@coordinator-agent` or `@ops-desk`.
 - **Archiving keeps the Mattermost channel.** `archive_room` archives the room in Switch. The Mattermost channel stays open until a Mattermost admin archives it.
 - **Windows notes.**
   - If agents answer in Console but never in Mattermost, see [WINDOWS.md](WINDOWS.md); WSL mirrored networking breaks the websocket.

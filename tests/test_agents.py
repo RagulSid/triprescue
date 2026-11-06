@@ -34,9 +34,9 @@ class AgentTests(unittest.TestCase):
             for rule in ("Read(../../.env)", "Read(../../docs/**)", "Edit", "Write", "Bash"):
                 self.assertIn(rule, denied(name), f"{name} must deny {rule}")
 
-    def test_only_switchboard_can_create_link_or_archive_rooms(self):
+    def test_only_coordinator_can_create_link_or_archive_rooms(self):
         for name in NAMES:
-            if name == "switchboard-agent":
+            if name == "coordinator-agent":
                 self.assertFalse(denied(name) & {f"mcp__switch__{t}" for t in ROOM_ADMIN + ["archive_room"]})
                 continue
             for tool in ROOM_ADMIN + ["archive_room", "create_agent"]:
@@ -73,10 +73,10 @@ class AgentTests(unittest.TestCase):
 
 
 class RoomConfigTests(unittest.TestCase):
-    def test_switchboard_and_scripts_take_room_names_from_config(self):
+    def test_coordinator_and_scripts_take_room_names_from_config(self):
         cfg = json.loads((ROOT / "rooms" / "rooms.json").read_text(encoding="utf-8"))
         self.assertEqual((cfg["trip_room"], cfg["hq_room"]), ("Parvati Trek", "Pinewood HQ"))
-        brief = (ROOT / "agents" / "switchboard-agent" / "CLAUDE.md").read_text(encoding="utf-8")
+        brief = (ROOT / "agents" / "coordinator-agent" / "CLAUDE.md").read_text(encoding="utf-8")
         self.assertIn("../../rooms/rooms.local.json", brief)
         self.assertIn("../../rooms/rooms.json", brief)
         self.assertNotIn("named exactly `Parvati Trek`", brief)
@@ -96,8 +96,8 @@ class RoomConfigTests(unittest.TestCase):
             self.assertEqual((got["trip_room"], got["hq_room"]), ("Bot: Parvati Trek", "Pinewood HQ"))
         self.assertIn("rooms/rooms.local.json", (ROOT / ".gitignore").read_text(encoding="utf-8").splitlines())
 
-    def test_switchboard_may_read_the_config(self):
-        self.assertIn("Read(../../rooms/**)", settings("switchboard-agent")["permissions"]["allow"])
+    def test_coordinator_may_read_the_config(self):
+        self.assertIn("Read(../../rooms/**)", settings("coordinator-agent")["permissions"]["allow"])
 
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 # Room instructions: Parvati Disruption
 
-**Chat app:** Mattermost (created by `switchboard-agent` when a cancellation arrives)
+**Chat app:** Mattermost (created by `coordinator-agent` when a cancellation arrives)
 Slack and Telegram are planned later; room rules do not depend on the chat app.
 **Links:** Parvati Trek (parent trip), Pinewood HQ (escalation)
 **Members:** the organizer (Ragul), the ops-desk holder and the specialists (`transport-agent`, `hotel-agent`, `itinerary-agent`)

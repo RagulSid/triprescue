@@ -102,6 +102,8 @@ class TriggerTests(unittest.TestCase):
         self.assertIn("the organizer's own words", brief)
         self.assertIn("Only the **latest** report counts", brief)
         self.assertNotIn("the texts are the `notice` field", brief)
+        self.assertIn('A question or a "what if"', brief)
+        self.assertIn("is not a report", brief)
 
     def test_plain_word_check_catches_technical_leaks(self):
         leaks = ["Room 1a2b3c4d now links to Pinewood HQ", "Opened for coach_cancelled",

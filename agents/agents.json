@@ -2,7 +2,7 @@
   "_note": "Console registration for each agent (Your Agents > + card). Directory is agents/<name> in this clone; scripts/setup.py --agents prints the full path. The model comes from each folder's .claude/settings.json, not from Console.",
   "agents": [
     {
-      "name": "switchboard-agent",
+      "name": "coordinator-agent",
       "description": "Opens, links and archives disruption rooms for Pinewood Holidays.",
       "instructions": "Follow CLAUDE.md in your directory. Act only on requests in a room; stop and post the exact error if a Switch tool fails.",
       "addressing": "owner-agents",
@@ -43,14 +43,14 @@
       "description": "Pinewood Holidays home base: disruption summaries and escalations.",
       "instructions_file": "rooms/pinewood-hq.md",
       "channel_type": "channel_public",
-      "agents": ["switchboard-agent"]
+      "agents": ["coordinator-agent"]
     },
     {
       "name": "Parvati Trek",
       "description": "Parvati Valley Trek: travelers and the support agent.",
       "instructions_file": "rooms/parvati-trek.md",
       "channel_type": "channel_public",
-      "agents": ["support-agent", "switchboard-agent"]
+      "agents": ["support-agent", "coordinator-agent"]
     }
   ]
 }

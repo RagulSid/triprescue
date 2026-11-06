@@ -2,7 +2,7 @@
 
 **Chat app:** Mattermost (`#pinewood-hq`)
 Slack and Telegram are planned later; room rules do not depend on the chat app.
-**Members:** the organizer (Ragul) and `switchboard-agent`
+**Members:** the organizer (Ragul) and `coordinator-agent`
 
 This is the operator's home base. Disruption rooms escalate here, and each disruption room posts its summary here when it closes.
 
