@@ -30,8 +30,10 @@ Pinewood Holidays, the Parvati Valley Trek, its travelers and its suppliers are 
 
 ```mermaid
 flowchart TD
-    N["Organizer posts the disruption notice<br/>in #parvati-trek, addressed to @coordinator-agent"]
-    N --> R["coordinator-agent creates a PRIVATE disruption room:<br/>room rules, roles, links to Trek and HQ, supplier sheet"]
+    N["Organizer says what went wrong, in their own words,<br/>in the trip room (Telegram), addressed to @coordinator-agent"]
+    N --> M{"coordinator-agent matches it<br/>to a scenario"}
+    M -->|unclear or contradicts the trip data| Q["Asks the organizer one plain question"] --> N
+    M -->|one clear match| R["coordinator-agent creates a PRIVATE disruption room:<br/>room rules, roles, links to Trek and HQ, supplier sheet"]
     R --> O["coordinator-agent takes the ops-desk role<br/>and sends each specialist its ask"]
     O --> T1["transport-agent"]
     O --> T2["hotel-agent"]
@@ -45,11 +47,13 @@ flowchart TD
     P --> A{"Organizer approves,<br/>or changes one detail"}
     A -->|change| RC["Specialist re-checks"] --> P
     A -->|approved| REC["Approval recorded in the room"]
-    REC --> TOLD["Travelers told in #parvati-trek:<br/>approved times only"]
+    REC --> TOLD["Travelers told in the trip room:<br/>approved times only"]
     TOLD --> X["Roles released, room archived,<br/>summary posted to #pinewood-hq"]
 ```
 
-The organizer types four messages per disruption: the notice, one change, the final approval, and "close the room". Everything else is agents talking to each other through Switch.
+The organizer types four messages per disruption: what went wrong (in their own words), one change, the final approval, and "close the room". Everything else is agents talking to each other through Switch.
+
+In the demo, travelers are in a Telegram group, while Pinewood HQ and the private disruption rooms are on Mattermost. Switch links rooms across the two apps.
 
 ## How Switch is used
 
@@ -63,7 +67,7 @@ The organizer types four messages per disruption: the notice, one change, the fi
 | **Targeted messages** | Agents ask each other with `send_targeted_message` (by name, or by role such as `@ops-desk`). Only addressed messages wake an agent, so each one works when asked and stays quiet otherwise. |
 | **Human approval** | The organizer approves in the room. A split of the group needs its own explicit approval. The approval is recorded as a line in the room. |
 | **Archive** | `archive_room` closes the disruption and keeps its history. The close-out summary goes to HQ, and a short note goes to the trip room. |
-| **Chat app** | Mattermost, bundled with the local Switch server. Commands use `!`, e.g. `!list-agents`. Room rules do not depend on the chat app. |
+| **Chat apps** | Mattermost, bundled with the local Switch server, hosts Pinewood HQ and the private disruption rooms. Commands use `!`, e.g. `!list-agents`. In the demo, travelers are on Telegram. One Switch bot serves every agent there, and the disruption room links to the Telegram room like any other. Room rules do not depend on the chat app. |
 
 **The remove-Switch test:** without Switch you have five separate chatbots with no shared room history, no rules they all read, no role that can pass between them, and no approval step. The workflow cannot run.
 
@@ -73,7 +77,7 @@ All five are existing Claude Code agents run by Switch Console. Each one's brief
 
 | Agent | Model | Job | Cannot |
 | --- | --- | --- | --- |
-| [`coordinator-agent`](agents/coordinator-agent/CLAUDE.md) | claude-sonnet-5-5 | Opens the disruption room from the scenario file, holds ops-desk while specialists answer, hands over, closes and archives | Edit files, run commands |
+| [`coordinator-agent`](agents/coordinator-agent/CLAUDE.md) | claude-sonnet-5-5 | Matches the organizer's words to a scenario (or asks one plain question), opens the disruption room from the scenario file, holds ops-desk while specialists answer, hands over, closes and archives | Edit files, run commands |
 | [`support-agent`](agents/support-agent/CLAUDE.md) | claude-sonnet-5-5 | Answers travelers from the trip plan, takes over ops-desk, writes the single proposal, tells travelers the approved plan | Create, link or archive rooms, invite agents |
 | [`transport-agent`](agents/transport-agent/CLAUDE.md) | claude-haiku-5-5 | Replacement transport from the supplier sheet, labelled CONFIRMED or ADVERTISED ONLY | Create, link or archive rooms |
 | [`hotel-agent`](agents/hotel-agent/CLAUDE.md) | claude-haiku-5-5 | Late check-in, meal and room changes | Create, link or archive rooms |
@@ -136,11 +140,11 @@ In Switch Console: **Your Rooms** → **Create room**, messaging app **Mattermos
 
 The names must match exactly: coordinator-agent finds these rooms by the names in [`rooms/rooms.json`](rooms/rooms.json). Disruption rooms are created by the agent, not by you.
 
-**Travelers on Telegram (optional):**
+**Travelers on Telegram (optional; our demo uses it):**
 1. In BotFather, turn Group Privacy off before the bot joins any chat.
 2. Connect Telegram in Console, and leave Mattermost as the default for new rooms.
 3. Add the bot to your Telegram group and invite `support-agent` and `coordinator-agent` there.
-4. Create `rooms/rooms.local.json` (gitignored) with `{"trip_room": "<the group's room name exactly as Console shows it>"}`.
+4. Create `rooms/rooms.local.json` (gitignored) with `{"trip_room": "<the group's room name exactly as Console shows it>"}`. Console names it `<connection name>: <group title>`, and renaming the group later does not change it.
 
 Disruption rooms stay private on Mattermost and link to the Telegram room. Nothing is renamed or archived.
 
@@ -167,13 +171,13 @@ Each scenario has a guide with the four messages to copy, in order, what to wait
 | `traveler_sick` | One traveler is unwell and leaves; the group splits only with explicit approval | [guide](seed/scenarios/traveler_sick/README.md) |
 
 In short:
-1. Post the notice in `#parvati-trek`.
+1. In the trip room, tell `@coordinator-agent` what went wrong, in your own words. Each guide has example wordings. If the message is vague or contradicts the trip data, the coordinator asks one plain question first. A line `Scenario: <name>` forces a scenario.
 2. Wait for the proposal in the new private room.
 3. Approve with one change.
 4. Give final approval.
 5. Ask the coordinator to close the room.
 
-Run one scenario at a time. On our machine a full run took about 6 to 14 minutes and about 5 to 7 agent sessions.
+Run one scenario at a time. On our machine a full run took about 5 to 10 minutes, including the organizer's pauses, and 4 to 5 agent sessions.
 
 ## Sample data
 
@@ -193,7 +197,9 @@ Everything in [`seed/`](seed/) is synthetic: the operator, trip, travelers, supp
 
 - **The handover is explicit.** Switch never reassigns a role by itself, and a role lease survives an agent going offline. coordinator-agent calls `release_role` and support-agent calls `assume_role`, both by instruction. Each agent holds one role at a time across all rooms, so run one scenario at a time.
 - **Address agents with an @mention.** Only addressed messages wake an agent. In our tests a Mattermost post without an @mention sometimes did not reach the agents at all; the cause is **Unverified**. Every message in the guides starts with `@coordinator-agent` or `@ops-desk`.
-- **Archiving keeps the Mattermost channel.** `archive_room` archives the room in Switch. The Mattermost channel stays open until a Mattermost admin archives it.
+- **In Telegram, use the `@name` form.** A message that starts with the bare agent name (`coordinator-agent …`) is not routed to the agent. Write `@coordinator-agent …`.
+- **Telegram shows Switch's status lines.** Everyone in the group sees Switch's status lines ("Starting a session…", "Working…") and its `/` command menu. We found no setting to hide them from travelers. The agents' own messages to travelers contain no ids or technical detail.
+- **The Mattermost channel may stay open after archiving.** `archive_room` archives the room in Switch. In our last three runs the Mattermost channel was also archived, about 25 seconds later. In earlier runs it stayed open until a Mattermost admin archived it. We have not found the cause. If the channel stays open, an admin can archive it (or run `run_scenario.py --archive-channel`).
 - **Windows notes.**
   - If agents answer in Console but never in Mattermost, see [WINDOWS.md](WINDOWS.md); WSL mirrored networking breaks the websocket.
   - Agents need Switch Console open and the laptop awake.
