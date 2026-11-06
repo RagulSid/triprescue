@@ -3,11 +3,11 @@
 Usage:
   python scripts/run_scenario.py --list
   python scripts/run_scenario.py <scenario>                    # print the messages to post (same as its README.md)
-  python scripts/run_scenario.py --write-guides                # regenerate seed/scenarios/*/README.md
+  python scripts/run_scenario.py --write-guides                # regenerate seed/scenarios/index.json and */README.md
   python scripts/run_scenario.py <scenario> --check            # clean-start check (local Switch database)
-  python scripts/run_scenario.py <scenario> --verify           # verify the latest run in the database
-  python scripts/run_scenario.py <scenario> --export DIR       # save the run's messages as evidence
-  python scripts/run_scenario.py <scenario> --archive-channel  # archive the run's Mattermost channel
+  python scripts/run_scenario.py [<scenario>] --verify         # verify the latest run (scenario inferred from the room if omitted)
+  python scripts/run_scenario.py [<scenario>] --export DIR     # save the run's messages as evidence
+  python scripts/run_scenario.py [<scenario>] --archive-channel  # archive the run's Mattermost channel
 
 Optional developer tooling: --check, --verify, --export and --archive-channel. The demo and
 scripts/setup.py never need them. They assume Switch Console's Windows layout (%APPDATA%\\switchdash).
@@ -33,6 +33,9 @@ ROOT = Path(__file__).resolve().parent.parent
 SCENARIOS = ROOT / "seed" / "scenarios"
 ENV = Path(os.path.expandvars(r"%APPDATA%\switchdash\local-switch-server\native\run\switch-core.env"))
 ROLE_AGENT = {"transport": "transport-agent", "hotel": "hotel-agent", "itinerary": "itinerary-agent"}
+COORDINATOR = "switchboard-agent"  # opens, hands over and closes disruption rooms
+INDEX = SCENARIOS / "index.json"
+TRIP_LABEL = "the trip room (#parvati-trek, or your Telegram group)"
 
 
 def load_rooms(root=ROOT):
@@ -61,51 +64,71 @@ def load_scenario(name):
 def messages(s):
     """The exact messages a person posts, in order: (where, text, wait-for)."""
     return [
-        ("#parvati-trek (new message)",
-         f"@switchboard-agent Scenario: {s['name']}. {s['notice']} Open the disruption room as your instructions describe.",
-         f"the private channel '{s['room_name']}' opens; the specialists answer; switchboard posts a handover note "
-         "and releases ops-desk; support-agent assumes it and sends you one proposal (no message from you needed)"),
+        (TRIP_LABEL,
+         f"@{COORDINATOR} {s['trigger']['examples'][0]}",
+         f"one plain sentence back in the trip room; the private channel '{s['room_name']}' opens; the specialists answer; "
+         f"{COORDINATOR} posts a handover note and releases ops-desk; support-agent assumes it and sends you one proposal "
+         "(no message from you needed)"),
         (f"'{s['room_name']}'",
          f"@ops-desk Approved with one change: {s['organizer_change'][0].lower()}{s['organizer_change'][1:]} Re-check it before I give final approval.",
          "the re-checked proposal"),
         (f"'{s['room_name']}'", "@ops-desk Final approval: approved as re-checked. Record it and tell the travelers.",
-         "\"Approval recorded\" and support-agent's message to travelers in #parvati-trek"),
-        ("#parvati-trek",
-         "@switchboard-agent The plan is approved and the travelers have been told. Close the room as your instructions describe.",
-         "one closing note in #parvati-trek and one summary in #pinewood-hq"),
+         "\"Approval recorded\" and support-agent's message to travelers in the trip room"),
+        (TRIP_LABEL,
+         f"@{COORDINATOR} The plan is approved and the travelers have been told. Please close the disruption room.",
+         "one closing note in the trip room and one summary in #pinewood-hq"),
     ]
+
+
+def build_index():
+    """seed/scenarios/index.json: what the coordinator reads to match an organizer's own words to a scenario."""
+    rows = []
+    for p in sorted(SCENARIOS.iterdir()):
+        if p.is_dir():
+            s = load_scenario(p.name)
+            rows.append({"name": s["name"], "title": s["title"], **s["trigger"]})
+    return {"_note": "Generated from seed/scenarios/*/scenario.json by scripts/run_scenario.py --write-guides; do not edit. "
+                     "Synthetic sample data.", "scenarios": rows}
 
 
 def render_guide(s):
     """README.md for a scenario folder: copy-paste messages first, then the expected outcome."""
     out = [f"# Scenario: {s['title']} (`{s['name']}`)", "", f"_{s['_note']}_", "",
-           f"The switchboard opens a private room **{s['room_name']}** with the roles "
+           f"{COORDINATOR} opens a private room **{s['room_name']}** with the roles "
            + ", ".join(f"`{r}`" for r in s["roles"]) + ".", "",
            "## Messages to post (copy each one exactly)", "",
            "Post one at a time and wait for the result before the next. "
-           "First run of the day only: send `!reset @switchboard-agent` and `!reset @support-agent` in #parvati-trek.", ""]
+           f"First run of the day only: send `!reset @{COORDINATOR}` and `!reset @support-agent` in the trip room.", ""]
     for i, (where, text, wait) in enumerate(messages(s), 1):
         out += [f"{i}. In **{where}**:", "", "   ```text", f"   {text}", "   ```", "", f"   Wait for: {wait}.", ""]
+    out += ["## Other ways to say it", "",
+            f"This scenario: {s['trigger']['description']} The coordinator matches your own words to it, so any of these work as message 1:", ""]
+    out += [f"- `@{COORDINATOR} {e}`" for e in s["trigger"]["examples"][1:]]
+    out += ["", "If it is unsure, it asks one short question; answer it in the same thread. "
+            f"To force this scenario, add a line `Scenario: {s['name']}`.", ""]
     blocked = ", ".join(s["expected"]["blocked_by_cap"]) or "none"
     by_eye = [
+        "The coordinator answers in the trip room with one plain sentence (no scenario name, room id or tool name).",
         f"A private channel **{s['room_name']}** appears; a traveler account cannot see it.",
         f"Options over 25,000 INR are marked BLOCKED BY CAP and left out of the proposal (here: {blocked}).",
-        "switchboard-agent posts a handover note and releases `ops-desk`; support-agent assumes it "
+        f"{COORDINATOR} posts a handover note and releases `ops-desk`; support-agent assumes it "
         "and sends one proposal without being asked.",
-        "After your final approval there is a line starting `Approval recorded:`, and #parvati-trek gets "
+        "After your final approval there is a line starting `Approval recorded:`, and the trip room gets "
         "the approved times only (no options, names or health details).",
-        "On close: one note in #parvati-trek, one summary in #pinewood-hq, and the room shows as archived in Switch Console.",
+        "On close: one note in the trip room, one summary in #pinewood-hq, and the room shows as archived in Switch Console.",
     ]
     if s["expected"]["split_needs_approval"]:
         by_eye.insert(2, "The proposal calls out the split and asks you to approve it explicitly.")
     out += ["## Expected outcome", ""] + [f"- {n}" for n in s["expected"]["notes"]] + [
         "", "## Check it", ""] + [f"- {line}" for line in by_eye] + [
         "", "Optional developer check (reads the local Switch database; assumes Switch Console's Windows layout, "
-        "see `scripts/run_scenario.py`):", "", "```text", f"python scripts/run_scenario.py {s['name']} --verify", "```", ""]
+        "see `scripts/run_scenario.py`):", "", "```text", "python scripts/run_scenario.py --verify", "```", ""]
     return "\n".join(out)
 
 
 def write_guides():
+    INDEX.write_text(json.dumps(build_index(), indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    print(f"wrote {INDEX.relative_to(ROOT).as_posix()}")
     for p in sorted(SCENARIOS.iterdir()):
         if p.is_dir():
             (p / "README.md").write_text(render_guide(load_scenario(p.name)), encoding="utf-8")
@@ -164,16 +187,16 @@ async def check(conn, s):
     ok &= good
     print(f"{'PASS' if good else 'FAIL'}  no role held anywhere ({', '.join(r['name'] for r in leases) or 'none'})")
     agents = {r["name"] for r in await conn.fetch("select name from agents")}
-    need = {"switchboard-agent", "support-agent"} | {ROLE_AGENT[r] for r in s["roles"] if r in ROLE_AGENT}
+    need = {COORDINATOR, "support-agent"} | {ROLE_AGENT[r] for r in s["roles"] if r in ROLE_AGENT}
     good = need <= agents
     ok &= good
     print(f"{'PASS' if good else 'FAIL'}  agents registered: {', '.join(sorted(need))}" + ("" if good else f" (missing {', '.join(sorted(need - agents))})"))
     members = {r["name"] for r in await conn.fetch(
         "select a.name from room_agents ra join agents a on a.id=ra.agent_id join rooms r on r.id=ra.room_id "
         "where r.name=$1 and r.archived_at is null", TRIP)}
-    good = {"switchboard-agent", "support-agent"} <= members
+    good = {COORDINATOR, "support-agent"} <= members
     ok &= good
-    print(f"{'PASS' if good else 'FAIL'}  switchboard-agent and support-agent are in {TRIP}")
+    print(f"{'PASS' if good else 'FAIL'}  {COORDINATOR} and support-agent are in {TRIP}")
     return ok
 
 
@@ -184,13 +207,48 @@ async def latest_run(conn, s, since):
         sys.exit(f"No room named {s['room_name']!r} created since {since:%Y-%m-%d %H:%M} UTC.")
     trip = (await conn.fetchrow("select id from rooms where name=$1 and archived_at is null", TRIP))["id"]
     hq = (await conn.fetchrow("select id from rooms where name=$1 and archived_at is null", HQ))["id"]
-    notice = await conn.fetchrow(
-        "select sent_at, body from messages where room_id=$1 and sent_at <= $2 and body ilike $3 "
-        "order by sent_at desc limit 1", trip, room["created_at"], f"%Scenario: {s['name']}%")
+    # The trigger is the organizer's own message to the coordinator in the trip room: the last one before the room
+    # opened, or, if the coordinator asked a clarifying question first, the message that question answered. Only
+    # messages after the previous disruption room closed (and at most 30 minutes before this one opened) count.
+    previous = await conn.fetchval(
+        "select max(archived_at) from rooms where name = any($1::text[]) and archived_at < $2",
+        all_room_names(), room["created_at"])
+    lower = max(previous or room["created_at"] - timedelta(minutes=30), room["created_at"] - timedelta(minutes=30))
+    asks = await conn.fetch(
+        "select sent_at, body from messages where room_id=$1 and sent_at > $2 and sent_at <= $3 "
+        "and event_type='m.room.message' and sender_name not like '%-agent' and sender_name not in ('admin', 'switch-admin') "
+        "and body ilike $4 order by sent_at desc", trip, lower, room["created_at"], f"%@{COORDINATOR}%")
+    notice = asks[0] if asks else None
+    for earlier in asks[1:]:
+        question = await conn.fetchval(
+            "select count(*) from messages where room_id=$1 and sender_name=$2 and body like '%?%' "
+            "and sent_at > $3 and sent_at < $4", trip, COORDINATOR, earlier["sent_at"], notice["sent_at"])
+        if not question:
+            break
+        notice = earlier
     return room, trip, hq, notice
 
 
-async def verify(conn, s, since):
+def all_room_names():
+    return [load_scenario(p.name)["room_name"] for p in sorted(SCENARIOS.iterdir()) if p.is_dir()]
+
+
+async def infer_scenario(conn, since):
+    """The scenario of the latest disruption room created since `since`, from its room name."""
+    by_room = {load_scenario(p.name)["room_name"]: p.name for p in SCENARIOS.iterdir() if p.is_dir()}
+    row = await conn.fetchrow("select name, created_at from rooms where name = any($1::text[]) and created_at >= $2 "
+                              "order by created_at desc limit 1", list(by_room), since)
+    if row is None:
+        sys.exit(f"No disruption room created since {since:%Y-%m-%d %H:%M} UTC.")
+    return by_room[row["name"]]
+
+
+# Words travelers should never see in the trip room.
+TECHNICAL = re.compile(r"\b(?=[0-9a-f]*\d)[0-9a-f]{8}\b|mcp__|ops-desk|`|\bScenario:|\b("
+                       + "|".join(["coach_cancelled", "heavy_rain", "lunch_unavailable", "traveler_sick"]) + r")\b", re.I)
+
+
+async def verify(conn, s, since, named=False):
     room, trip, hq, notice = await latest_run(conn, s, since)
     rid = room["id"]
     end = (room["archived_at"] or datetime.now(timezone.utc)) + timedelta(minutes=5)
@@ -201,13 +259,17 @@ async def verify(conn, s, since):
         print(f"{'PASS' if ok else 'FAIL'}  {text}")
 
     print(f"Room {rid} {room['name']!r}, created {room['created_at'].astimezone(IST):%H:%M:%S} IST")
-    res(notice is not None, f"trigger notice found in {TRIP}" + (f" at {notice['sent_at'].astimezone(IST):%H:%M:%S} IST" if notice else ""))
+    if named:
+        latest = await infer_scenario(conn, since)
+        res(latest == s["name"], f"latest disruption room is this scenario's ({latest})")
+    res(notice is not None, f"organizer's message to {COORDINATOR} found in {TRIP}"
+        + (f" at {notice['sent_at'].astimezone(IST):%H:%M:%S} IST: {notice['body'][:70]!r}" if notice else ""))
     res(room["channel_type"] == "channel_private", f"private channel ({room['channel_type']})")
     instructions_ok = (room["instructions"] or "").startswith((ROOT / "rooms" / "parvati-disruption.md").read_text(encoding="utf-8").strip()[:200])
     res(instructions_ok and s["title"] in (room["instructions"] or ""), "instructions = room file + this scenario's section")
     agents = {r["name"] for r in await conn.fetch(
         "select a.name from room_agents ra join agents a on a.id=ra.agent_id where ra.room_id=$1", rid)}
-    need = {"switchboard-agent", "support-agent"} | {ROLE_AGENT[r] for r in s["roles"] if r in ROLE_AGENT}
+    need = {COORDINATOR, "support-agent"} | {ROLE_AGENT[r] for r in s["roles"] if r in ROLE_AGENT}
     res(need <= agents, f"agents: {', '.join(sorted(agents))}")
     roles = {r["name"]: r["exclusive"] for r in await conn.fetch("select name, exclusive from room_roles where room_id=$1", rid)}
     res(set(roles) == set(s["roles"]) and roles.get("ops-desk") is True and not any(v for k, v in roles.items() if k != "ops-desk"),
@@ -229,17 +291,27 @@ async def verify(conn, s, since):
     res(leases == 0, f"no role still held in the room ({leases})")
     start = room["created_at"]
     closed = room["archived_at"] or end
-    hq_sql = ("select body from messages where room_id=$1 and sender_name='switchboard-agent' and sent_at between $2 and $3 "
+    hq_sql = (f"select body from messages where room_id=$1 and sender_name='{COORDINATOR}' and sent_at between $2 and $3 "
               "and body not ilike 'Starting a session%' and body not ilike 'Already closed%'")
     hq_open = await conn.fetch(hq_sql, hq, start, closed)
     hq_posts = await conn.fetch(hq_sql, hq, closed, end)
     trip_notes = await conn.fetch(
-        "select body from messages where room_id=$1 and sender_name='switchboard-agent' and sent_at between $2 and $3 "
+        f"select body from messages where room_id=$1 and sender_name='{COORDINATOR}' and sent_at between $2 and $3 "
         "and body not ilike 'Starting a session%' and body not ilike 'Already closed%' and body ilike '%closed%'",
         trip, approval["sent_at"] if approval else start, end)
     res(len(hq_open) == 1, f"room details posted once in {HQ} when the room opened ({len(hq_open)})")
     res(len(hq_posts) == 1, f"close-out posted once in {HQ} after the archive ({len(hq_posts)})")
     res(len(trip_notes) == 1, f"close-out note posted once in {TRIP} ({len(trip_notes)})")
+    agent_posts = await conn.fetch(
+        "select body from messages where room_id=$1 and sender_name like '%-agent' and event_type='m.room.message' "
+        "and sent_at between $2 and $3", trip, notice["sent_at"] if notice else start, end)
+    leaks = [m.group(0) for r in agent_posts for m in [TECHNICAL.search(r["body"] or "")] if m]
+    res(not leaks, f"trip room posts in plain words, no ids, scenario names or tool names ({len(agent_posts)} posts"
+        + (f"; found {leaks}" if leaks else "") + ")")
+    questions = await conn.fetchval(
+        "select count(*) from messages where room_id=$1 and sender_name=$2 and body like '%?%' and sent_at between $3 and $4",
+        trip, COORDINATOR, notice["sent_at"] if notice else start, start)
+    print(f"INFO  clarifying questions from {COORDINATOR} before the room opened: {questions}")
     first = notice["sent_at"] if notice else start
     sessions = await conn.fetch(
         "select sender_name, count(*) from messages where body ilike 'Starting a session%' and sent_at between $1 and $2 group by 1",
@@ -326,14 +398,18 @@ def main():
     if a.write_guides:
         write_guides()
         return 0
-    if not a.scenario:
-        ap.error("name a scenario, or use --list")
-    s = load_scenario(a.scenario)
     since = datetime.fromisoformat(a.since.replace("Z", "+00:00")) if a.since else datetime.now(timezone.utc) - timedelta(days=1)
+    uses_db = a.verify or a.export or a.archive_channel
+    if not a.scenario:
+        if not uses_db:
+            ap.error("name a scenario, or use --list")
+        a_name = asyncio.run(query(lambda c: infer_scenario(c, since)))
+        print(f"Latest run: {a_name} (inferred from the disruption room)")
+    s = load_scenario(a.scenario or a_name)
     if a.check:
         return 0 if asyncio.run(query(lambda c: check(c, s))) else 1
     if a.verify:
-        return 0 if asyncio.run(query(lambda c: verify(c, s, since))) else 1
+        return 0 if asyncio.run(query(lambda c: verify(c, s, since, named=bool(a.scenario)))) else 1
     if a.export:
         asyncio.run(query(lambda c: export(c, s, since, a.export)))
         return 0

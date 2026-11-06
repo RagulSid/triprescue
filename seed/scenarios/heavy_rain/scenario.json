@@ -3,6 +3,19 @@
   "name": "heavy_rain",
   "title": "Heavy rain cancels the afternoon trek",
   "room_name": "Parvati Rain Disruption",
+  "trigger": {
+    "description": "Heavy rain closes the valley trails this afternoon, so today's guided trek cannot run; roads stay open.",
+    "signs": [
+      "heavy rain, a storm or a weather alert",
+      "trails closed or the afternoon trek cancelled",
+      "travel and the camp are not affected"
+    ],
+    "examples": [
+      "Weather alert: heavy rain from 14:00 to 20:00 today and the trails are closed, so the 15:30 trek with Tenzin is off. Can you rework the afternoon?",
+      "It's going to pour this afternoon and the valley trails are shut. What do we do instead of the trek?",
+      "Rain has cancelled today's trek. The roads to Kasol are fine."
+    ]
+  },
   "notice": "Weather alert, Day 3, 12:10 (sample district desk): heavy rain from 14:00 to 20:00 today. The Parvati valley trails are closed this afternoon, so all guided treks are cancelled. Roads to Kasol stay open.",
   "roles": [
     "ops-desk",

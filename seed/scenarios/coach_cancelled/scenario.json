@@ -3,6 +3,19 @@
   "name": "coach_cancelled",
   "title": "Coach HT-22 cancelled",
   "room_name": "Parvati Coach Disruption",
+  "trigger": {
+    "description": "The Manali to Kasol coach (HT-22) is cancelled for today and the supplier has no replacement.",
+    "signs": [
+      "the coach, bus or vehicle from Manali to Kasol is cancelled, withdrawn or broken down",
+      "the supplier cannot send a replacement",
+      "the group cannot travel this morning"
+    ],
+    "examples": [
+      "Dispatch just called: coach HT-22 to Kasol is withdrawn today with a mechanical fault, and they have no replacement vehicle. Can you sort out a new plan?",
+      "Our 08:30 coach from Manali is cancelled. How do we get everyone to Kasol today?",
+      "Bad news: the bus to Kasol broke down this morning and the supplier can't replace it."
+    ]
+  },
   "notice": "Notice from dispatch, Day 3, 06:52: Coach HT-22 (Manali to Kasol, 08:30) is withdrawn for today due to a mechanical fault. We cannot provide a replacement vehicle.",
   "roles": [
     "ops-desk",

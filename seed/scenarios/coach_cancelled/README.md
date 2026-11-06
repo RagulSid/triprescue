@@ -2,19 +2,19 @@
 
 _Synthetic sample data. Pinewood Holidays, the trip, people and suppliers are fictional._
 
-The switchboard opens a private room **Parvati Coach Disruption** with the roles `ops-desk`, `transport`, `hotel`, `itinerary`.
+switchboard-agent opens a private room **Parvati Coach Disruption** with the roles `ops-desk`, `transport`, `hotel`, `itinerary`.
 
 ## Messages to post (copy each one exactly)
 
-Post one at a time and wait for the result before the next. First run of the day only: send `!reset @switchboard-agent` and `!reset @support-agent` in #parvati-trek.
+Post one at a time and wait for the result before the next. First run of the day only: send `!reset @switchboard-agent` and `!reset @support-agent` in the trip room.
 
-1. In **#parvati-trek (new message)**:
+1. In **the trip room (#parvati-trek, or your Telegram group)**:
 
    ```text
-   @switchboard-agent Scenario: coach_cancelled. Notice from dispatch, Day 3, 06:52: Coach HT-22 (Manali to Kasol, 08:30) is withdrawn for today due to a mechanical fault. We cannot provide a replacement vehicle. Open the disruption room as your instructions describe.
+   @switchboard-agent Dispatch just called: coach HT-22 to Kasol is withdrawn today with a mechanical fault, and they have no replacement vehicle. Can you sort out a new plan?
    ```
 
-   Wait for: the private channel 'Parvati Coach Disruption' opens; the specialists answer; switchboard posts a handover note and releases ops-desk; support-agent assumes it and sends you one proposal (no message from you needed).
+   Wait for: one plain sentence back in the trip room; the private channel 'Parvati Coach Disruption' opens; the specialists answer; switchboard-agent posts a handover note and releases ops-desk; support-agent assumes it and sends you one proposal (no message from you needed).
 
 2. In **'Parvati Coach Disruption'**:
 
@@ -30,15 +30,24 @@ Post one at a time and wait for the result before the next. First run of the day
    @ops-desk Final approval: approved as re-checked. Record it and tell the travelers.
    ```
 
-   Wait for: "Approval recorded" and support-agent's message to travelers in #parvati-trek.
+   Wait for: "Approval recorded" and support-agent's message to travelers in the trip room.
 
-4. In **#parvati-trek**:
+4. In **the trip room (#parvati-trek, or your Telegram group)**:
 
    ```text
-   @switchboard-agent The plan is approved and the travelers have been told. Close the room as your instructions describe.
+   @switchboard-agent The plan is approved and the travelers have been told. Please close the disruption room.
    ```
 
-   Wait for: one closing note in #parvati-trek and one summary in #pinewood-hq.
+   Wait for: one closing note in the trip room and one summary in #pinewood-hq.
+
+## Other ways to say it
+
+This scenario: The Manali to Kasol coach (HT-22) is cancelled for today and the supplier has no replacement. The coordinator matches your own words to it, so any of these work as message 1:
+
+- `@switchboard-agent Our 08:30 coach from Manali is cancelled. How do we get everyone to Kasol today?`
+- `@switchboard-agent Bad news: the bus to Kasol broke down this morning and the supplier can't replace it.`
+
+If it is unsure, it asks one short question; answer it in the same thread. To force this scenario, add a line `Scenario: coach_cancelled`.
 
 ## Expected outcome
 
@@ -52,14 +61,15 @@ Post one at a time and wait for the result before the next. First run of the day
 
 ## Check it
 
+- The coordinator answers in the trip room with one plain sentence (no scenario name, room id or tool name).
 - A private channel **Parvati Coach Disruption** appears; a traveler account cannot see it.
 - Options over 25,000 INR are marked BLOCKED BY CAP and left out of the proposal (here: C).
 - switchboard-agent posts a handover note and releases `ops-desk`; support-agent assumes it and sends one proposal without being asked.
-- After your final approval there is a line starting `Approval recorded:`, and #parvati-trek gets the approved times only (no options, names or health details).
-- On close: one note in #parvati-trek, one summary in #pinewood-hq, and the room shows as archived in Switch Console.
+- After your final approval there is a line starting `Approval recorded:`, and the trip room gets the approved times only (no options, names or health details).
+- On close: one note in the trip room, one summary in #pinewood-hq, and the room shows as archived in Switch Console.
 
 Optional developer check (reads the local Switch database; assumes Switch Console's Windows layout, see `scripts/run_scenario.py`):
 
 ```text
-python scripts/run_scenario.py coach_cancelled --verify
+python scripts/run_scenario.py --verify
 ```

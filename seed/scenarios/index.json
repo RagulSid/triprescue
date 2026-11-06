@@ -1,0 +1,65 @@
+{
+  "_note": "Generated from seed/scenarios/*/scenario.json by scripts/run_scenario.py --write-guides; do not edit. Synthetic sample data.",
+  "scenarios": [
+    {
+      "name": "coach_cancelled",
+      "title": "Coach HT-22 cancelled",
+      "description": "The Manali to Kasol coach (HT-22) is cancelled for today and the supplier has no replacement.",
+      "signs": [
+        "the coach, bus or vehicle from Manali to Kasol is cancelled, withdrawn or broken down",
+        "the supplier cannot send a replacement",
+        "the group cannot travel this morning"
+      ],
+      "examples": [
+        "Dispatch just called: coach HT-22 to Kasol is withdrawn today with a mechanical fault, and they have no replacement vehicle. Can you sort out a new plan?",
+        "Our 08:30 coach from Manali is cancelled. How do we get everyone to Kasol today?",
+        "Bad news: the bus to Kasol broke down this morning and the supplier can't replace it."
+      ]
+    },
+    {
+      "name": "heavy_rain",
+      "title": "Heavy rain cancels the afternoon trek",
+      "description": "Heavy rain closes the valley trails this afternoon, so today's guided trek cannot run; roads stay open.",
+      "signs": [
+        "heavy rain, a storm or a weather alert",
+        "trails closed or the afternoon trek cancelled",
+        "travel and the camp are not affected"
+      ],
+      "examples": [
+        "Weather alert: heavy rain from 14:00 to 20:00 today and the trails are closed, so the 15:30 trek with Tenzin is off. Can you rework the afternoon?",
+        "It's going to pour this afternoon and the valley trails are shut. What do we do instead of the trek?",
+        "Rain has cancelled today's trek. The roads to Kasol are fine."
+      ]
+    },
+    {
+      "name": "lunch_unavailable",
+      "title": "Camp kitchen cannot serve lunch",
+      "description": "Riverbend Camp cannot serve the group lunch on arrival today; dinner is not affected.",
+      "signs": [
+        "no lunch, or a kitchen or cooking gas problem at the camp",
+        "a meal for the group cannot be served",
+        "dinner is fine"
+      ],
+      "examples": [
+        "Riverbend Camp says their cooking gas delivery is late, so they can't serve lunch when we arrive today. Dinner is fine.",
+        "The camp kitchen can't do lunch today. Can you find something for the group?",
+        "No lunch at Riverbend today because of a gas problem. Please sort out food for 20 people."
+      ]
+    },
+    {
+      "name": "traveler_sick",
+      "title": "One traveler unwell and leaving the trip",
+      "description": "One traveler (t07) is unwell and wants to leave the trip and go back to Manali today; 19 continue.",
+      "signs": [
+        "a traveler is unwell, sick or not feeling well",
+        "someone wants to leave the trip or go home",
+        "one person needs to get back to Manali"
+      ],
+      "examples": [
+        "Tenzin says traveler t07 is unwell and wants to stop the trip and go back to Manali today. They're resting at Riverbend Camp.",
+        "t07 isn't feeling well and wants to go home to Manali. Can you plan their return and keep the rest of the group going?",
+        "One of our travelers, t07, wants to leave the trip today because they're unwell."
+      ]
+    }
+  ]
+}

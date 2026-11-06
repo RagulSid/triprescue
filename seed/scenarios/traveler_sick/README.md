@@ -2,19 +2,19 @@
 
 _Synthetic sample data. Pinewood Holidays, the trip, people and suppliers are fictional. Logistics only: no medical details or advice._
 
-The switchboard opens a private room **Parvati Traveler Disruption** with the roles `ops-desk`, `transport`, `hotel`, `itinerary`.
+switchboard-agent opens a private room **Parvati Traveler Disruption** with the roles `ops-desk`, `transport`, `hotel`, `itinerary`.
 
 ## Messages to post (copy each one exactly)
 
-Post one at a time and wait for the result before the next. First run of the day only: send `!reset @switchboard-agent` and `!reset @support-agent` in #parvati-trek.
+Post one at a time and wait for the result before the next. First run of the day only: send `!reset @switchboard-agent` and `!reset @support-agent` in the trip room.
 
-1. In **#parvati-trek (new message)**:
+1. In **the trip room (#parvati-trek, or your Telegram group)**:
 
    ```text
-   @switchboard-agent Scenario: traveler_sick. Message from guide Tenzin, Day 3, 11:20: traveler t07 is unwell and wants to stop the trip and go back to Manali today. They are resting at Riverbend Camp. No medical details are shared here; the organizer is in touch with them directly. Open the disruption room as your instructions describe.
+   @switchboard-agent Tenzin says traveler t07 is unwell and wants to stop the trip and go back to Manali today. They're resting at Riverbend Camp.
    ```
 
-   Wait for: the private channel 'Parvati Traveler Disruption' opens; the specialists answer; switchboard posts a handover note and releases ops-desk; support-agent assumes it and sends you one proposal (no message from you needed).
+   Wait for: one plain sentence back in the trip room; the private channel 'Parvati Traveler Disruption' opens; the specialists answer; switchboard-agent posts a handover note and releases ops-desk; support-agent assumes it and sends you one proposal (no message from you needed).
 
 2. In **'Parvati Traveler Disruption'**:
 
@@ -30,15 +30,24 @@ Post one at a time and wait for the result before the next. First run of the day
    @ops-desk Final approval: approved as re-checked. Record it and tell the travelers.
    ```
 
-   Wait for: "Approval recorded" and support-agent's message to travelers in #parvati-trek.
+   Wait for: "Approval recorded" and support-agent's message to travelers in the trip room.
 
-4. In **#parvati-trek**:
+4. In **the trip room (#parvati-trek, or your Telegram group)**:
 
    ```text
-   @switchboard-agent The plan is approved and the travelers have been told. Close the room as your instructions describe.
+   @switchboard-agent The plan is approved and the travelers have been told. Please close the disruption room.
    ```
 
-   Wait for: one closing note in #parvati-trek and one summary in #pinewood-hq.
+   Wait for: one closing note in the trip room and one summary in #pinewood-hq.
+
+## Other ways to say it
+
+This scenario: One traveler (t07) is unwell and wants to leave the trip and go back to Manali today; 19 continue. The coordinator matches your own words to it, so any of these work as message 1:
+
+- `@switchboard-agent t07 isn't feeling well and wants to go home to Manali. Can you plan their return and keep the rest of the group going?`
+- `@switchboard-agent One of our travelers, t07, wants to leave the trip today because they're unwell.`
+
+If it is unsure, it asks one short question; answer it in the same thread. To force this scenario, add a line `Scenario: traveler_sick`.
 
 ## Expected outcome
 
@@ -52,15 +61,16 @@ Post one at a time and wait for the result before the next. First run of the day
 
 ## Check it
 
+- The coordinator answers in the trip room with one plain sentence (no scenario name, room id or tool name).
 - A private channel **Parvati Traveler Disruption** appears; a traveler account cannot see it.
-- Options over 25,000 INR are marked BLOCKED BY CAP and left out of the proposal (here: S3).
 - The proposal calls out the split and asks you to approve it explicitly.
+- Options over 25,000 INR are marked BLOCKED BY CAP and left out of the proposal (here: S3).
 - switchboard-agent posts a handover note and releases `ops-desk`; support-agent assumes it and sends one proposal without being asked.
-- After your final approval there is a line starting `Approval recorded:`, and #parvati-trek gets the approved times only (no options, names or health details).
-- On close: one note in #parvati-trek, one summary in #pinewood-hq, and the room shows as archived in Switch Console.
+- After your final approval there is a line starting `Approval recorded:`, and the trip room gets the approved times only (no options, names or health details).
+- On close: one note in the trip room, one summary in #pinewood-hq, and the room shows as archived in Switch Console.
 
 Optional developer check (reads the local Switch database; assumes Switch Console's Windows layout, see `scripts/run_scenario.py`):
 
 ```text
-python scripts/run_scenario.py traveler_sick --verify
+python scripts/run_scenario.py --verify
 ```

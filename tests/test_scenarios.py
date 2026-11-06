@@ -14,7 +14,7 @@ ROLES = ROOT / "rooms" / "roles"
 CAP_INR = 25000
 LABELS = {"CONFIRMED", "ADVERTISED ONLY"}
 EXPECTED_NAMES = {"coach_cancelled", "heavy_rain", "lunch_unavailable", "traveler_sick"}
-REQUIRED_KEYS = {"name", "title", "room_name", "notice", "roles", "data_files", "changed_facts",
+REQUIRED_KEYS = {"name", "title", "room_name", "trigger", "notice", "roles", "data_files", "changed_facts",
                  "asks", "options", "organizer_change", "expected"}
 # Words that would mean medical content rather than logistics.
 MEDICAL_WORDS = re.compile(r"\b(diagnos\w*|symptom\w*|medicat\w*|dose|prescri\w*|fever|infection|treatment)\b", re.I)
@@ -63,7 +63,7 @@ class ScenarioTests(unittest.TestCase):
                 self.assertEqual(readme, mod.render_guide(s),
                                  "README.md is stale: run python scripts/run_scenario.py --write-guides")
                 self.assertLess(readme.index("## Messages to post"), readme.index("## Expected outcome"))
-                self.assertIn(s["notice"], readme)
+                self.assertIn(s["trigger"]["examples"][0], readme)
 
     def test_room_names_are_unique(self):
         names = [s["room_name"] for _, s in scenarios()]

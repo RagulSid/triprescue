@@ -3,6 +3,19 @@
   "name": "lunch_unavailable",
   "title": "Camp kitchen cannot serve lunch",
   "room_name": "Parvati Lunch Disruption",
+  "trigger": {
+    "description": "Riverbend Camp cannot serve the group lunch on arrival today; dinner is not affected.",
+    "signs": [
+      "no lunch, or a kitchen or cooking gas problem at the camp",
+      "a meal for the group cannot be served",
+      "dinner is fine"
+    ],
+    "examples": [
+      "Riverbend Camp says their cooking gas delivery is late, so they can't serve lunch when we arrive today. Dinner is fine.",
+      "The camp kitchen can't do lunch today. Can you find something for the group?",
+      "No lunch at Riverbend today because of a gas problem. Please sort out food for 20 people."
+    ]
+  },
   "notice": "Message from Riverbend Camp, Day 3, 09:40: our cooking gas delivery is delayed, so the kitchen cannot serve the group lunch on arrival today. Dinner is not affected.",
   "roles": [
     "ops-desk",
