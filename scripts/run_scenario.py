@@ -269,6 +269,11 @@ async def verify(conn, s, since, named=False):
     rid = room["id"]
     e, home = event(s), event_room(s)
     end = (room["archived_at"] or datetime.now(timezone.utc)) + timedelta(minutes=5)
+    # Stop where the next run starts: its HQ report and sessions belong to it, not to this run.
+    later = await conn.fetchval("select min(created_at) from rooms where name = any($1::text[]) and created_at > $2",
+                                all_room_names(), room["created_at"])
+    if later is not None and later < end:
+        end = later
     results = []
 
     def res(ok, text):
