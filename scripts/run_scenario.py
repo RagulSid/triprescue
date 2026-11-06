@@ -245,7 +245,7 @@ async def infer_scenario(conn, since):
 
 # Words travelers should never see in the trip room.
 TECHNICAL = re.compile(r"\b(?=[0-9a-f]*\d)[0-9a-f]{8}\b|mcp__|ops-desk|`|\bScenario:|\b("
-                       + "|".join(["coach_cancelled", "heavy_rain", "lunch_unavailable", "traveler_sick"]) + r")\b", re.I)
+                       + "|".join(sorted(p.name for p in SCENARIOS.iterdir() if p.is_dir())) + r")\b", re.I)
 
 
 async def verify(conn, s, since, named=False):

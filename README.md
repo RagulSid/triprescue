@@ -164,7 +164,6 @@ Each scenario has a guide with the four messages to copy, in order, what to wait
 | --- | --- | --- |
 | `coach_cancelled` | The 08:30 coach is withdrawn; check-in and the trek break | [guide](seed/scenarios/coach_cancelled/README.md) |
 | `heavy_rain` | Rain closes the afternoon trek trail | [guide](seed/scenarios/heavy_rain/README.md) |
-| `lunch_unavailable` | The camp kitchen cannot serve lunch | [guide](seed/scenarios/lunch_unavailable/README.md) |
 | `traveler_sick` | One traveler is unwell and leaves; the group splits only with explicit approval | [guide](seed/scenarios/traveler_sick/README.md) |
 
 In short:

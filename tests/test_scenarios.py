@@ -13,7 +13,7 @@ SCENARIOS = ROOT / "seed" / "scenarios"
 ROLES = ROOT / "rooms" / "roles"
 CAP_INR = 25000
 LABELS = {"CONFIRMED", "ADVERTISED ONLY"}
-EXPECTED_NAMES = {"coach_cancelled", "heavy_rain", "lunch_unavailable", "traveler_sick"}
+EXPECTED_NAMES = {"coach_cancelled", "heavy_rain", "traveler_sick"}
 REQUIRED_KEYS = {"name", "title", "room_name", "trigger", "notice", "roles", "data_files", "changed_facts",
                  "asks", "options", "organizer_change", "expected"}
 # Words that would mean medical content rather than logistics.
@@ -27,7 +27,7 @@ def scenarios():
 
 
 class ScenarioTests(unittest.TestCase):
-    def test_the_four_scenarios_exist(self):
+    def test_the_expected_scenarios_exist(self):
         self.assertEqual({s["name"] for _, s in scenarios()}, EXPECTED_NAMES)
 
     def test_shape_and_files(self):

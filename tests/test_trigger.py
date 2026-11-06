@@ -18,7 +18,6 @@ NAMES = sorted(p.name for p in SCENARIOS.iterdir() if p.is_dir())
 KEYWORDS = {
     "coach_cancelled": r"\b(coach|bus|vehicle)\b",
     "heavy_rain": r"\b(rain|pour|weather|trails?)\b",
-    "lunch_unavailable": r"\b(lunch|kitchen|gas|food)\b",
     "traveler_sick": r"\b(unwell|feeling well|leave the trip|go home|stop the trip)\b",
 }
 # Concrete facts an example may state: times, codes such as HT-22, traveler ids, numbers.

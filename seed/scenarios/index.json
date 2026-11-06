@@ -32,21 +32,6 @@
       ]
     },
     {
-      "name": "lunch_unavailable",
-      "title": "Camp kitchen cannot serve lunch",
-      "description": "Riverbend Camp cannot serve the group lunch on arrival today; dinner is not affected.",
-      "signs": [
-        "no lunch, or a kitchen or cooking gas problem at the camp",
-        "a meal for the group cannot be served",
-        "dinner is fine"
-      ],
-      "examples": [
-        "Riverbend Camp says their cooking gas delivery is late, so they can't serve lunch when we arrive today. Dinner is fine.",
-        "The camp kitchen can't do lunch today. Can you find something for the group?",
-        "No lunch at Riverbend today because of a gas problem. Please sort out food for 20 people."
-      ]
-    },
-    {
       "name": "traveler_sick",
       "title": "One traveler unwell and leaving the trip",
       "description": "One traveler (t07) is unwell and wants to leave the trip and go back to Manali today; 19 continue.",
