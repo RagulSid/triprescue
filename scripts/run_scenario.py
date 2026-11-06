@@ -293,7 +293,8 @@ async def verify(conn, s, since, named=False):
     closed = room["archived_at"] or end
     hq_sql = (f"select body from messages where room_id=$1 and sender_name='{COORDINATOR}' and sent_at between $2 and $3 "
               "and body not ilike 'Starting a session%' and body not ilike 'Already closed%'")
-    hq_open = await conn.fetch(hq_sql, hq, start, closed)
+    # The open report comes before the organizer's approval; a later post (e.g. a close-out on hold) is not it.
+    hq_open = await conn.fetch(hq_sql, hq, start, approval["sent_at"] if approval else closed)
     hq_posts = await conn.fetch(hq_sql, hq, closed, end)
     trip_notes = await conn.fetch(
         f"select body from messages where room_id=$1 and sender_name='{COORDINATOR}' and sent_at between $2 and $3 "

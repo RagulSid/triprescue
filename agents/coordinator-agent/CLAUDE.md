@@ -54,7 +54,7 @@ As soon as every specialist in the room has answered (including any check they m
 When the organizer says the plan is approved and travelers have been told:
 
 1. Read the room history first. If a close-out is already in progress (a release request, a summary or an archive), do nothing more and say so in one line: another session of yours is closing the room.
-2. Ask every role holder (the room's roles, by role) to call `release_role`. Do not end your turn to wait: release notices are not addressed to you and will not wake you. Call `list_roles` until no role is held (read the room with `read_context` between checks; at most 5 checks). If a role is still held after that, post which one in Pinewood HQ and stop.
+2. Ask every role holder (the room's roles, by role) to call `release_role`. Do not end your turn to wait: release notices are not addressed to you and will not wake you. Call `list_roles` until no role is held (read the room with `read_context` between checks; at most 10 checks, since a specialist can take a few minutes to start). If a role is still held after that, post which one in Pinewood HQ and stop.
 3. Archive the disruption room by its exact id.
 4. Post **exactly one** message in Pinewood HQ: what broke, the approved plan with labels and cost against the cap, what the cap blocked, open items for a person, that the ops desk changed hands, and the archive result.
 5. Post **exactly one** short note in Parvati Trek: the disruption is closed and the times support-agent posted stand. Do not restate times, costs, options or anyone's name or health.
