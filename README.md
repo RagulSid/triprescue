@@ -134,7 +134,15 @@ In Switch Console: **Your Rooms** → **Create room**, messaging app **Mattermos
 | `Pinewood HQ` | switchboard-agent | [`rooms/pinewood-hq.md`](rooms/pinewood-hq.md) |
 | `Parvati Trek` | support-agent, switchboard-agent | [`rooms/parvati-trek.md`](rooms/parvati-trek.md) |
 
-The names must match exactly: switchboard-agent finds these rooms by name. Disruption rooms are created by the agent, not by you.
+The names must match exactly: switchboard-agent finds these rooms by the names in [`rooms/rooms.json`](rooms/rooms.json). Disruption rooms are created by the agent, not by you.
+
+**Travelers on Telegram (optional):**
+1. In BotFather, turn Group Privacy off before the bot joins any chat.
+2. Connect Telegram in Console, and leave Mattermost as the default for new rooms.
+3. Add the bot to your Telegram group and invite `support-agent` and `switchboard-agent` there.
+4. Create `rooms/rooms.local.json` (gitignored) with `{"trip_room": "<the group's room name exactly as Console shows it>"}`.
+
+Disruption rooms stay private on Mattermost and link to the Telegram room. Nothing is renamed or archived.
 
 Optional: create a second Mattermost account as a traveler and add it to `#parvati-trek` only. This shows that travelers never see the private disruption room.
 

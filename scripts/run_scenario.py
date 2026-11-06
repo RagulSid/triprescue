@@ -33,7 +33,20 @@ ROOT = Path(__file__).resolve().parent.parent
 SCENARIOS = ROOT / "seed" / "scenarios"
 ENV = Path(os.path.expandvars(r"%APPDATA%\switchdash\local-switch-server\native\run\switch-core.env"))
 ROLE_AGENT = {"transport": "transport-agent", "hotel": "hotel-agent", "itinerary": "itinerary-agent"}
-TRIP, HQ = "Parvati Trek", "Pinewood HQ"
+
+
+def load_rooms(root=ROOT):
+    """Exact Switch names of the trip and HQ rooms: rooms/rooms.json, overridden by the
+    gitignored rooms/rooms.local.json when it exists (e.g. a Telegram trip room)."""
+    rooms = json.loads((root / "rooms" / "rooms.json").read_text(encoding="utf-8"))
+    local = root / "rooms" / "rooms.local.json"
+    if local.is_file():
+        rooms.update(json.loads(local.read_text(encoding="utf-8")))
+    return rooms
+
+
+ROOMS = load_rooms()
+TRIP, HQ = ROOMS["trip_room"], ROOMS["hq_room"]
 IST = timezone(timedelta(hours=5, minutes=30))
 
 
@@ -188,7 +201,7 @@ async def verify(conn, s, since):
         print(f"{'PASS' if ok else 'FAIL'}  {text}")
 
     print(f"Room {rid} {room['name']!r}, created {room['created_at'].astimezone(IST):%H:%M:%S} IST")
-    res(notice is not None, "trigger notice found in Parvati Trek" + (f" at {notice['sent_at'].astimezone(IST):%H:%M:%S} IST" if notice else ""))
+    res(notice is not None, f"trigger notice found in {TRIP}" + (f" at {notice['sent_at'].astimezone(IST):%H:%M:%S} IST" if notice else ""))
     res(room["channel_type"] == "channel_private", f"private channel ({room['channel_type']})")
     instructions_ok = (room["instructions"] or "").startswith((ROOT / "rooms" / "parvati-disruption.md").read_text(encoding="utf-8").strip()[:200])
     res(instructions_ok and s["title"] in (room["instructions"] or ""), "instructions = room file + this scenario's section")
@@ -210,20 +223,23 @@ async def verify(conn, s, since):
     told = await conn.fetch(
         "select sent_at, body from messages where room_id=$1 and sender_name='support-agent' and sent_at >= $2 and sent_at <= $3",
         trip, approval["sent_at"] if approval else end, end)
-    res(len(told) >= 1, f"travelers told in Parvati Trek by support-agent ({len(told)} message)")
+    res(len(told) >= 1, f"travelers told in {TRIP} by support-agent ({len(told)} message)")
     res(room["archived_at"] is not None, "room archived" + (f" at {room['archived_at'].astimezone(IST):%H:%M:%S} IST" if room["archived_at"] else ""))
     leases = await conn.fetchval("select count(*) from role_leases where room_id=$1", rid)
     res(leases == 0, f"no role still held in the room ({leases})")
     start = room["created_at"]
-    hq_posts = await conn.fetch(
-        "select body from messages where room_id=$1 and sender_name='switchboard-agent' and sent_at between $2 and $3 "
-        "and body not ilike 'Starting a session%' and body not ilike 'Already closed%'", hq, start, end)
+    closed = room["archived_at"] or end
+    hq_sql = ("select body from messages where room_id=$1 and sender_name='switchboard-agent' and sent_at between $2 and $3 "
+              "and body not ilike 'Starting a session%' and body not ilike 'Already closed%'")
+    hq_open = await conn.fetch(hq_sql, hq, start, closed)
+    hq_posts = await conn.fetch(hq_sql, hq, closed, end)
     trip_notes = await conn.fetch(
         "select body from messages where room_id=$1 and sender_name='switchboard-agent' and sent_at between $2 and $3 "
         "and body not ilike 'Starting a session%' and body not ilike 'Already closed%' and body ilike '%closed%'",
         trip, approval["sent_at"] if approval else start, end)
-    res(len(hq_posts) == 1, f"close-out posted once in Pinewood HQ ({len(hq_posts)})")
-    res(len(trip_notes) == 1, f"close-out note posted once in Parvati Trek ({len(trip_notes)})")
+    res(len(hq_open) == 1, f"room details posted once in {HQ} when the room opened ({len(hq_open)})")
+    res(len(hq_posts) == 1, f"close-out posted once in {HQ} after the archive ({len(hq_posts)})")
+    res(len(trip_notes) == 1, f"close-out note posted once in {TRIP} ({len(trip_notes)})")
     first = notice["sent_at"] if notice else start
     sessions = await conn.fetch(
         "select sender_name, count(*) from messages where body ilike 'Starting a session%' and sent_at between $1 and $2 group by 1",

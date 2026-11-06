@@ -72,5 +72,33 @@ class AgentTests(unittest.TestCase):
         self.assertEqual(len(kinds["group"]), 1)
 
 
+class RoomConfigTests(unittest.TestCase):
+    def test_switchboard_and_scripts_take_room_names_from_config(self):
+        cfg = json.loads((ROOT / "rooms" / "rooms.json").read_text(encoding="utf-8"))
+        self.assertEqual((cfg["trip_room"], cfg["hq_room"]), ("Parvati Trek", "Pinewood HQ"))
+        brief = (ROOT / "agents" / "switchboard-agent" / "CLAUDE.md").read_text(encoding="utf-8")
+        self.assertIn("../../rooms/rooms.local.json", brief)
+        self.assertIn("../../rooms/rooms.json", brief)
+        self.assertNotIn("named exactly `Parvati Trek`", brief)
+        import run_scenario
+        self.assertEqual((run_scenario.TRIP, run_scenario.HQ), (run_scenario.ROOMS["trip_room"], run_scenario.ROOMS["hq_room"]))
+
+    def test_local_override_wins_and_is_gitignored(self):
+        import tempfile
+        import run_scenario
+        with tempfile.TemporaryDirectory() as tmp:
+            rooms = Path(tmp) / "rooms"
+            rooms.mkdir()
+            (rooms / "rooms.json").write_text(json.dumps({"trip_room": "Parvati Trek", "hq_room": "Pinewood HQ"}), encoding="utf-8")
+            self.assertEqual(run_scenario.load_rooms(Path(tmp))["trip_room"], "Parvati Trek")
+            (rooms / "rooms.local.json").write_text(json.dumps({"trip_room": "Bot: Parvati Trek"}), encoding="utf-8")
+            got = run_scenario.load_rooms(Path(tmp))
+            self.assertEqual((got["trip_room"], got["hq_room"]), ("Bot: Parvati Trek", "Pinewood HQ"))
+        self.assertIn("rooms/rooms.local.json", (ROOT / ".gitignore").read_text(encoding="utf-8").splitlines())
+
+    def test_switchboard_may_read_the_config(self):
+        self.assertIn("Read(../../rooms/**)", settings("switchboard-agent")["permissions"]["allow"])
+
+
 if __name__ == "__main__":
     unittest.main()
