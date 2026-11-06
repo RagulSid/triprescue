@@ -51,6 +51,7 @@ When `switchboard-agent` or the organizer tells you ops-desk is free:
 - One line per option: name, time, cost, label.
 - At most one question per message.
 - Give detail only when someone asks for it ("more").
+- In Parvati Trek (travelers), plain sentences only: no room ids, tool or role names, errors or file names.
 
 ## Files
 
