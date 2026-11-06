@@ -1,9 +1,13 @@
-"""Check that this machine is ready to run TripRescue.
+"""Check that this machine is ready to run TripRescue, and print what to enter in Switch Console.
 
-Usage: python scripts/setup.py
+Usage:
+  python scripts/setup.py              # run every check (exit 0 only if all pass)
+  python scripts/setup.py --agents     # print the Console fields for each agent and room, with this clone's paths
+  python scripts/setup.py --template   # print a Switch template (version 2) that creates the agents and rooms
 
-Checks Python, the seed data, Docker, Claude Code and the .env file.
-Never prints token values. Exits 0 only when every check passes.
+The checks never read Switch Console's credentials or the Switch database, and never print
+a token. They cannot see inside Switch Console: whether the agents are registered and the
+rooms exist is a manual check (see README, "Set up Switch").
 """
 
 import json
@@ -13,21 +17,19 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-REQUIRED_ENV = [
-    "SLACK_WORKSPACE_ID",
-    "SLACK_APP_TOKEN",
-    "SLACK_BOT_TOKEN",
-    "TELEGRAM_BOT_TOKEN",
-    "TELEGRAM_BOT_USERNAME",
-]
-ENV_PREFIXES = {"SLACK_WORKSPACE_ID": "T", "SLACK_APP_TOKEN": "xapp-", "SLACK_BOT_TOKEN": "xoxb-"}
+REGISTRY = ROOT / "agents" / "agents.json"
+MATTERMOST_CONTAINER = "mattermost"  # the bundled Mattermost container's name contains this
 
 
-def run(cmd):
+def run(cmd, timeout=30, cwd=None):
     try:
-        return subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+        return subprocess.run(cmd, capture_output=True, text=True, timeout=timeout, cwd=cwd)
     except (OSError, subprocess.TimeoutExpired) as exc:
         return subprocess.CompletedProcess(cmd, 1, "", str(exc))
+
+
+def registry():
+    return json.loads(REGISTRY.read_text(encoding="utf-8"))
 
 
 def check_python():
@@ -36,15 +38,36 @@ def check_python():
 
 
 def check_seed():
-    files = sorted((ROOT / "seed").glob("*.json"))
+    files = sorted((ROOT / "seed").rglob("*.json"))
     if not files:
-        return False, "no seed/*.json files found"
+        return False, "no seed JSON files found"
     for path in files:
         try:
             json.loads(path.read_text(encoding="utf-8"))
         except json.JSONDecodeError as exc:
-            return False, f"{path.name} is not valid JSON: {exc}"
+            return False, f"{path.relative_to(ROOT)} is not valid JSON: {exc}"
     return True, f"{len(files)} seed files parse"
+
+
+def check_agents():
+    problems = []
+    names = [a["name"] for a in registry()["agents"]]
+    for name in names:
+        folder = ROOT / "agents" / name
+        if not (folder / "CLAUDE.md").is_file():
+            problems.append(f"{name}: CLAUDE.md missing")
+        try:
+            settings = json.loads((folder / ".claude" / "settings.json").read_text(encoding="utf-8"))
+            if "model" not in settings:
+                problems.append(f"{name}: no model in .claude/settings.json")
+        except (OSError, json.JSONDecodeError) as exc:
+            problems.append(f"{name}: .claude/settings.json unreadable ({exc.__class__.__name__})")
+    for room in registry()["rooms"]:
+        if not (ROOT / room["instructions_file"]).is_file():
+            problems.append(f"{room['instructions_file']} missing")
+    if problems:
+        return False, "; ".join(problems)
+    return True, f"{len(names)} agent folders with CLAUDE.md and a model; room instruction files present"
 
 
 def check_docker():
@@ -55,6 +78,18 @@ def check_docker():
     if result.returncode != 0 or not result.stdout.strip():
         return False, "Docker is installed but the engine is not running; start Docker Desktop"
     return True, f"Docker engine {result.stdout.strip()}"
+
+
+def check_mattermost():
+    docker = shutil.which("docker")
+    if not docker:
+        return False, "needs Docker"
+    result = run([docker, "ps", "--filter", f"name={MATTERMOST_CONTAINER}", "--format", "{{.Names}}"])
+    names = [n for n in result.stdout.split() if n]
+    if not names:
+        return False, ("no running Mattermost container; open Switch Console and start the local server "
+                       "(Mattermost comes with it)")
+    return True, f"running: {', '.join(names)}"
 
 
 def check_claude():
@@ -71,38 +106,110 @@ def check_claude():
     return True, "Claude Code signed in"
 
 
-def read_env(path):
-    values = {}
-    for line in path.read_text(encoding="utf-8-sig").splitlines():
-        line = line.strip()
-        if line and not line.startswith("#") and "=" in line:
-            key, value = line.split("=", 1)
-            values[key.strip()] = value.split("#", 1)[0].strip()
-    return values
+def check_secrets():
+    git = shutil.which("git")
+    if not git or not (ROOT / ".git").exists():
+        return True, "not a git checkout; skipped"
+    tracked = run([git, "ls-files", ".env"], cwd=ROOT).stdout.strip()
+    if tracked:
+        return False, ".env is tracked by git; remove it with: git rm --cached .env"
+    return True, ".env is not tracked (no chat-app tokens are needed for the Mattermost demo)"
 
 
-def check_env():
-    env_path = ROOT / ".env"
-    if not env_path.exists():
-        shutil.copyfile(ROOT / ".env.example", env_path)
-        return False, "created .env from .env.example; fill in the values"
-    values = read_env(env_path)
-    missing = [key for key in REQUIRED_ENV if not values.get(key)]
-    if missing:
-        return False, "empty in .env: " + ", ".join(missing)
-    wrong = [key for key, prefix in ENV_PREFIXES.items() if not values[key].startswith(prefix)]
-    if wrong:
-        return False, "unexpected format in .env: " + ", ".join(wrong)
-    return True, "all required .env keys are set"
+def check_tests():
+    result = run([sys.executable, "-m", "unittest", "discover", "-s", "tests", "-q"], timeout=120, cwd=ROOT)
+    last = (result.stderr.strip().splitlines() or ["no output"])
+    summary = next((l for l in reversed(last) if l.startswith(("Ran ", "OK", "FAILED"))), last[-1])
+    ran = next((l for l in last if l.startswith("Ran ")), "")
+    if result.returncode != 0:
+        return False, f"{ran} {summary}".strip() + "; run: python -m unittest discover tests"
+    return True, f"{ran}, OK".strip(", ")
+
+
+def print_agents():
+    reg = registry()
+    print("Switch Console > Your Agents > the + card. For each agent:\n")
+    for a in reg["agents"]:
+        model = json.loads((ROOT / "agents" / a["name"] / ".claude" / "settings.json").read_text(encoding="utf-8"))["model"]
+        print(f"  Name:               {a['name']}")
+        print(f"  Description:        {a['description']}")
+        print(f"  Agent instructions: {a['instructions']}")
+        print(f"  Run location:       This computer")
+        print(f"  Directory:          {ROOT / 'agents' / a['name']}")
+        print(f"  Agent provider:     Claude Code   (model {model} comes from .claude/settings.json)")
+        print(f"  Who can talk to your agent: {'anyone' if a['addressing'] == 'anyone' else 'default (you and your agents)'}")
+        print()
+    print("Switch Console > Your Rooms > Create room. For each room (messaging app: Mattermost):\n")
+    for r in reg["rooms"]:
+        print(f"  Name:         {r['name']}")
+        print(f"  Description:  {r['description']}")
+        print(f"  Agents:       {', '.join(r['agents'])}")
+        print(f"  Instructions: paste the whole of {ROOT / r['instructions_file']}")
+        print()
+
+
+def template():
+    """A version 2 Switch template as JSON (JSON is valid YAML). Unverified: not yet run in Console."""
+    reg = registry()
+    key = lambda name: name.replace("-", "_")
+    resources = {}
+    for a in reg["agents"]:
+        resources[key(a["name"])] = {
+            "type": "agent",
+            "name": a["name"],
+            "description": a["description"],
+            "instructions": a["instructions"],
+            "provider": "claude",
+            "machine": "{machine}",
+            "directory": "{repo_dir}/agents/" + a["name"],
+            "addressing": a["addressing"],
+            "allow_existing": True,
+        }
+    for r in reg["rooms"]:
+        resources[key(r["name"].lower().replace(" ", "_"))] = {
+            "type": "room",
+            "name": r["name"],
+            "description": r["description"],
+            "instructions": (ROOT / r["instructions_file"]).read_text(encoding="utf-8"),
+            "bridge": "{bridge}",
+            "channel_type": r["channel_type"],
+            "agents": [key(n) for n in r["agents"]],
+            "users": ["{$creator}"],
+            "group": "pinewood",
+        }
+    resources["pinewood"] = {
+        "type": "group",
+        "name": "Pinewood Holidays",
+        "description": "TripRescue base rooms: operator HQ and the trip room.",
+    }
+    doc = {
+        "version": 2,
+        "params": {
+            "machine": {"type": "machine", "default": ["$first"], "description": "Where the agents run"},
+            "bridge": {"type": "bridge", "default": ["$first"], "description": "Messaging app (Mattermost)"},
+            "repo_dir": {"type": "string", "default": ROOT.as_posix(), "description": "Folder of this clone"},
+        },
+        "resources": resources,
+    }
+    return json.dumps(doc, indent=2, ensure_ascii=False)
 
 
 def main():
+    if "--agents" in sys.argv:
+        print_agents()
+        return 0
+    if "--template" in sys.argv:
+        print(template())
+        return 0
     checks = [
         ("Python", check_python),
         ("Seed data", check_seed),
+        ("Agent folders", check_agents),
         ("Docker", check_docker),
+        ("Mattermost", check_mattermost),
         ("Claude Code", check_claude),
-        (".env", check_env),
+        ("Secrets", check_secrets),
+        ("Tests", check_tests),
     ]
     failed = 0
     for name, check in checks:
@@ -111,7 +218,8 @@ def main():
         print(f"[{'PASS' if ok else 'FAIL'}] {name}: {detail}")
     print()
     print("All checks passed." if not failed else f"{failed} check(s) failed.")
-    print("Switch Console must also be open with the local server running; this script cannot check that.")
+    print("Not checked here (look in Switch Console): the five agents are registered and running,")
+    print("and the rooms Pinewood HQ and Parvati Trek exist. Print the fields with: python scripts/setup.py --agents")
     return 1 if failed else 0
 
 

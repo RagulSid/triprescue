@@ -52,8 +52,14 @@ Post one at a time and wait for the result before the next. First run of the day
 
 ## Check it
 
+- A private channel **Parvati Coach Disruption** appears; a traveler account cannot see it.
+- Options over 25,000 INR are marked BLOCKED BY CAP and left out of the proposal (here: C).
+- switchboard-agent posts a handover note and releases `ops-desk`; support-agent assumes it and sends one proposal without being asked.
+- After your final approval there is a line starting `Approval recorded:`, and #parvati-trek gets the approved times only (no options, names or health details).
+- On close: one note in #parvati-trek, one summary in #pinewood-hq, and the room shows as archived in Switch Console.
+
+Optional developer check (reads the local Switch database; assumes Switch Console's Windows layout, see `scripts/run_scenario.py`):
+
 ```text
 python scripts/run_scenario.py coach_cancelled --verify
 ```
-
-Run it with the Python inside the local Switch server (see `scripts/run_scenario.py`).

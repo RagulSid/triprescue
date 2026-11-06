@@ -9,6 +9,8 @@ Usage:
   python scripts/run_scenario.py <scenario> --export DIR       # save the run's messages as evidence
   python scripts/run_scenario.py <scenario> --archive-channel  # archive the run's Mattermost channel
 
+Optional developer tooling: --check, --verify, --export and --archive-channel. The demo and
+scripts/setup.py never need them. They assume Switch Console's Windows layout (%APPDATA%\\switchdash).
 --check, --verify and --export read the local Switch database (read-only) with the
 credentials in Switch Console's switch-core.env, which are never printed. Run them
 with the Python that ships with the local Switch server, because it has asyncpg:
@@ -71,9 +73,22 @@ def render_guide(s):
            "First run of the day only: send `!reset @switchboard-agent` and `!reset @support-agent` in #parvati-trek.", ""]
     for i, (where, text, wait) in enumerate(messages(s), 1):
         out += [f"{i}. In **{where}**:", "", "   ```text", f"   {text}", "   ```", "", f"   Wait for: {wait}.", ""]
+    blocked = ", ".join(s["expected"]["blocked_by_cap"]) or "none"
+    by_eye = [
+        f"A private channel **{s['room_name']}** appears; a traveler account cannot see it.",
+        f"Options over 25,000 INR are marked BLOCKED BY CAP and left out of the proposal (here: {blocked}).",
+        "switchboard-agent posts a handover note and releases `ops-desk`; support-agent assumes it "
+        "and sends one proposal without being asked.",
+        "After your final approval there is a line starting `Approval recorded:`, and #parvati-trek gets "
+        "the approved times only (no options, names or health details).",
+        "On close: one note in #parvati-trek, one summary in #pinewood-hq, and the room shows as archived in Switch Console.",
+    ]
+    if s["expected"]["split_needs_approval"]:
+        by_eye.insert(2, "The proposal calls out the split and asks you to approve it explicitly.")
     out += ["## Expected outcome", ""] + [f"- {n}" for n in s["expected"]["notes"]] + [
-        "", "## Check it", "", "```text", f"python scripts/run_scenario.py {s['name']} --verify", "```", "",
-        "Run it with the Python inside the local Switch server (see `scripts/run_scenario.py`).", ""]
+        "", "## Check it", ""] + [f"- {line}" for line in by_eye] + [
+        "", "Optional developer check (reads the local Switch database; assumes Switch Console's Windows layout, "
+        "see `scripts/run_scenario.py`):", "", "```text", f"python scripts/run_scenario.py {s['name']} --verify", "```", ""]
     return "\n".join(out)
 
 

@@ -63,7 +63,7 @@ When the organizer says the plan is approved and travelers have been told:
 
 - Use the `mcp__switch__*` tools directly; there is no Switch skill to load.
 - Load every Switch tool you need with ONE `ToolSearch` call at the start: `select:mcp__switch__list_all_rooms,mcp__switch__list_all_references,mcp__switch__list_reference_types,mcp__switch__create_reference,mcp__switch__get_my_context,mcp__switch__create_room,mcp__switch__get_room_detail,mcp__switch__connect_to_room,mcp__switch__list_roles,mcp__switch__assume_role,mcp__switch__release_role,mcp__switch__read_context,mcp__switch__send_targeted_message,mcp__switch__post_message,mcp__switch__archive_room`. Do not search for tools one by one.
-- Read the room history once when you start (`read_context` with limit 30), then rely on the messages you are sent. Read it again only if you were away (a handover) or someone says "re-check".
+- Read the room history once when you start (`read_context` with limit 15), then rely on the messages you are sent. Read it again only if you were away (a handover) or someone says "re-check".
 - Read the room file and the role files only when you open a room. Do not call `get_room_detail` to re-check a room you just created; the `create_room` result is enough.
 
 ## Output rule (every message)

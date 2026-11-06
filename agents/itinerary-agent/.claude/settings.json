@@ -1,7 +1,15 @@
 {
+  "model": "claude-sonnet-5-5",
   "permissions": {
-    "additionalDirectories": ["../../seed", "../../rooms"],
-    "allow": ["Read(../../seed/**)", "Read(../../rooms/**)", "mcp__switch"],
+    "additionalDirectories": [
+      "../../seed",
+      "../../rooms"
+    ],
+    "allow": [
+      "Read(../../seed/**)",
+      "Read(../../rooms/**)",
+      "mcp__switch"
+    ],
     "deny": [
       "Read(../../.env)",
       "Read(../../docs/**)",
