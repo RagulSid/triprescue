@@ -96,6 +96,12 @@ class TriggerTests(unittest.TestCase):
             self.assertIn(phrase, brief)
         self.assertNotIn("use `coach_cancelled`", brief)
 
+    def test_coordinator_does_not_end_its_turn_while_roles_release(self):
+        brief = (ROOT / "agents" / run_scenario.COORDINATOR / "CLAUDE.md").read_text(encoding="utf-8")
+        self.assertIn("Do not end your turn to wait", brief)
+        self.assertIn("at most 5 checks", brief)
+        self.assertNotIn("then check `list_roles` once", brief)
+
     def test_support_agent_counts_the_latest_report_in_any_words(self):
         brief = (ROOT / "agents" / "support-agent" / "CLAUDE.md").read_text(encoding="utf-8")
         self.assertIn("../../seed/scenarios/index.json", brief)
