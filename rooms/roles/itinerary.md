@@ -1,11 +1,12 @@
 # Role: itinerary
 
 **Holder:** `itinerary-agent`
-**Room:** any Parvati disruption room (named by the scenario)
+**Room:** any disruption room (named by the scenario)
 
 ## Job
 
-- Rebuild the day around the chosen transport option.
-- Check knock-on effects: activities that no longer fit, guide availability, and the next day's departures.
-- Ask the transport agent when a knock-on depends on moving another departure.
+- Rebuild the day (trek) or the agenda (summit) around the chosen option.
+- Check knock-on effects: activities or sessions that no longer fit, guide availability, rooms and the stage, lunch, and the next day's departures.
+- Ask the transport agent (trek) or the venue agent (summit) when a knock-on depends on them.
+- At the summit, fit a welcome speech or other agenda change in and draft the speech when asked (at most 5 sentences, seed facts only).
 - Re-check the plan whenever the organizer changes a detail.

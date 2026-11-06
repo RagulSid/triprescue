@@ -49,9 +49,27 @@ class SeedTests(unittest.TestCase):
         self.assertEqual(domains, {"example.com"})
 
 
+TREK_ROOMS = {"parvati-disruption.md", "parvati-trek.md", "pinewood-hq.md"}
+SUMMIT_ROOMS = {"summit-disruption.md", "switch-summit.md"}
+
+
 class RoomRuleTests(unittest.TestCase):
+    def test_every_room_file_belongs_to_an_event(self):
+        self.assertEqual({p.name for p in ROOMS.glob("*.md")}, TREK_ROOMS | SUMMIT_ROOMS)
+
+    def test_summit_rooms_have_their_five_rules(self):
+        for name in SUMMIT_ROOMS:
+            text = (ROOMS / name).read_text(encoding="utf-8")
+            with self.subTest(room=name):
+                self.assertIn("60,000 INR", text)
+                self.assertIn("Every registered attendee and invited guest gets a seat", text)
+                self.assertIn("the organizer approves", text)
+                self.assertIn("ADVERTISED ONLY", text)
+                self.assertIn("counts only", text)
+                self.assertNotIn("25,000", text)
+
     def test_every_room_has_all_four_rules(self):
-        for path in ROOMS.glob("*.md"):
+        for path in (ROOMS / n for n in sorted(TREK_ROOMS)):
             text = path.read_text(encoding="utf-8")
             with self.subTest(room=path.name):
                 self.assertIn("25,000 INR", text)

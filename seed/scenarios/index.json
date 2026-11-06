@@ -3,6 +3,7 @@
   "scenarios": [
     {
       "name": "coach_cancelled",
+      "event": "parvati",
       "title": "Coach HT-22 cancelled",
       "description": "The Manali to Kasol coach (HT-22) is cancelled for today and the supplier has no replacement.",
       "signs": [
@@ -18,6 +19,7 @@
     },
     {
       "name": "heavy_rain",
+      "event": "parvati",
       "title": "Heavy rain cancels the afternoon trek",
       "description": "Heavy rain closes the valley trails this afternoon, so today's guided trek cannot run; roads stay open.",
       "signs": [
@@ -33,6 +35,7 @@
     },
     {
       "name": "traveler_sick",
+      "event": "parvati",
       "title": "One traveler unwell and leaving the trip",
       "description": "One traveler (t07) is unwell and wants to leave the trip and go back to Manali today; 19 continue.",
       "signs": [
@@ -44,6 +47,22 @@
         "Tenzin says traveler t07 is unwell and wants to stop the trip and go back to Manali today. They're resting at Riverbend Camp.",
         "t07 isn't feeling well and wants to go home to Manali. Can you plan their return and keep the rest of the group going?",
         "One of our travelers, t07, wants to leave the trip today because they're unwell."
+      ]
+    },
+    {
+      "name": "vip_guests",
+      "event": "summit",
+      "title": "Ten VIP guests arriving today",
+      "description": "At the Switch Summit conference, a partner delegation of 10 VIP guests arrives today at 09:00: they need seats together at the front, vegetarian lunches (the kitchen must be told), and a short welcome speech.",
+      "signs": [
+        "extra VIP guests, a delegation or visitors are joining the conference",
+        "they need seats, special meals or a welcome",
+        "the kitchen or catering team must be told about extra or vegetarian meals"
+      ],
+      "examples": [
+        "A partner delegation of 10 VIP guests is joining us today. They need good seats together, they prefer vegetarian food, and we want to give them a welcome speech.",
+        "We have 10 extra VIPs arriving at 09:00. Can you sort their seating, let the kitchen know they're vegetarian, and fit in a welcome?",
+        "Ten VIP guests from a partner delegation are coming to the summit today: plan their seats, a veg lunch and a short welcome speech."
       ]
     }
   ]

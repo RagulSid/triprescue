@@ -19,6 +19,7 @@ KEYWORDS = {
     "coach_cancelled": r"\b(coach|bus|vehicle)\b",
     "heavy_rain": r"\b(rain|pour|weather|trails?)\b",
     "traveler_sick": r"\b(unwell|feeling well|leave the trip|go home|stop the trip)\b",
+    "vip_guests": r"\b(VIPs?|delegation|guests?|welcome)\b",
 }
 # Concrete facts an example may state: times, codes such as HT-22, traveler ids, numbers.
 FACT = re.compile(r"\b\d{1,2}:\d{2}\b|\b[A-Z]{2}-\d+\b|\bt\d{2}\b|\b\d+\b")
@@ -34,7 +35,7 @@ def seed_text(name):
     s.pop("trigger")
     parts = [json.dumps(s, ensure_ascii=False)]
     parts += [(ROOT / rel).read_text(encoding="utf-8") for rel in s["data_files"]]
-    parts += [p.read_text(encoding="utf-8") for p in (ROOT / "seed").glob("*.json")]
+    parts += [p.read_text(encoding="utf-8") for p in (ROOT / "seed").rglob("*.json") if "scenarios" not in p.parts]
     return "\n".join(parts)
 
 
@@ -94,6 +95,11 @@ class TriggerTests(unittest.TestCase):
                        "no scenario name"):
             self.assertIn(phrase, brief)
         self.assertNotIn("use `coach_cancelled`", brief)
+        # The event decides the room, room file, cap and reference; nothing is fixed to the trek.
+        self.assertIn("../../seed/events.json", brief)
+        self.assertIn("owns the room the message came from", brief)
+        for fixed in ("parvati-disruption.md", "25,000", "20 travelers", "Pinewood supplier sheet"):
+            self.assertNotIn(fixed, brief)
 
     def test_coordinator_does_not_end_its_turn_while_roles_release(self):
         brief = (ROOT / "agents" / run_scenario.COORDINATOR / "CLAUDE.md").read_text(encoding="utf-8")

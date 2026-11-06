@@ -1,6 +1,7 @@
 {
   "_note": "Synthetic sample data. Pinewood Holidays, the trip, people and suppliers are fictional. Logistics only: no medical details or advice.",
   "name": "traveler_sick",
+  "event": "parvati",
   "title": "One traveler unwell and leaving the trip",
   "room_name": "Parvati Traveler Disruption",
   "trigger": {

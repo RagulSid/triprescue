@@ -1,0 +1,40 @@
+{
+  "_note": "Synthetic sample data. Pinewood Holidays, Switch Summit 2026, the venue, people and suppliers are fictional. Attendee needs are counts only, never tied to a name.",
+  "operator": "Pinewood Holidays",
+  "event": "Switch Summit 2026",
+  "kind": "one-day conference",
+  "venue": "Lakeside Convention Centre",
+  "organizer": "Ragul",
+  "attendees": 180,
+  "seating_needs": {
+    "speakers": 6,
+    "vip_front_row": 10,
+    "wheelchair_spaces": 8
+  },
+  "meal_counts": {
+    "_note": "Counts only. The five diets add up to 180; nut_free is an extra flag across them.",
+    "vegetarian": 110,
+    "non_vegetarian": 45,
+    "vegan": 12,
+    "jain": 8,
+    "gluten_free": 5,
+    "nut_free": 3
+  },
+  "rooms": [
+    { "id": "hall-a", "name": "Hall A", "seats": 220, "wheelchair_spaces": 10, "front_row_seats": 22 },
+    { "id": "hall-b", "name": "Hall B", "seats": 90, "wheelchair_spaces": 4, "front_row_seats": 12 },
+    { "id": "room-c", "name": "Room C", "seats": 40, "wheelchair_spaces": 2 },
+    { "id": "room-d", "name": "Room D", "seats": 40, "wheelchair_spaces": 2 },
+    { "id": "terrace", "name": "Terrace", "use": "lunch buffet for up to 200" }
+  ],
+  "today": [
+    { "time": "08:30", "end": "09:30", "item": "Registration", "place": "Foyer" },
+    { "time": "09:30", "end": "10:30", "item": "Opening keynote", "place": "Hall A" },
+    { "time": "10:30", "end": "11:00", "item": "Coffee break", "place": "Foyer" },
+    { "time": "11:00", "end": "12:30", "item": "Track 1 talks", "place": "Hall A" },
+    { "time": "11:00", "end": "12:30", "item": "Track 2 talks", "place": "Hall B" },
+    { "time": "13:00", "end": "14:00", "item": "Lunch", "place": "Terrace" },
+    { "time": "14:30", "end": "16:30", "item": "Workshops", "place": "Rooms C and D" },
+    { "time": "17:00", "end": "17:30", "item": "Closing session", "place": "Hall A" }
+  ]
+}

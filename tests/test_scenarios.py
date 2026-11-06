@@ -11,10 +11,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 SCENARIOS = ROOT / "seed" / "scenarios"
 ROLES = ROOT / "rooms" / "roles"
-CAP_INR = 25000
+EVENTS = json.loads((ROOT / "seed" / "events.json").read_text(encoding="utf-8"))["events"]
 LABELS = {"CONFIRMED", "ADVERTISED ONLY"}
-EXPECTED_NAMES = {"coach_cancelled", "heavy_rain", "traveler_sick"}
-REQUIRED_KEYS = {"name", "title", "room_name", "trigger", "notice", "roles", "data_files", "changed_facts",
+EXPECTED_NAMES = {"coach_cancelled", "heavy_rain", "traveler_sick", "vip_guests"}
+REQUIRED_KEYS = {"name", "event", "title", "room_name", "trigger", "notice", "roles", "data_files", "changed_facts",
                  "asks", "options", "organizer_change", "expected"}
 # Words that would mean medical content rather than logistics.
 MEDICAL_WORDS = re.compile(r"\b(diagnos\w*|symptom\w*|medicat\w*|dose|prescri\w*|fever|infection|treatment)\b", re.I)
@@ -29,6 +29,12 @@ def scenarios():
 class ScenarioTests(unittest.TestCase):
     def test_the_expected_scenarios_exist(self):
         self.assertEqual({s["name"] for _, s in scenarios()}, EXPECTED_NAMES)
+
+    def test_every_scenario_names_a_known_event(self):
+        for path, s in scenarios():
+            with self.subTest(scenario=path.name):
+                self.assertIn(s["event"], EVENTS)
+        self.assertEqual({s["name"] for _, s in scenarios() if s["event"] == "summit"}, {"vip_guests"})
 
     def test_shape_and_files(self):
         for path, s in scenarios():
@@ -90,7 +96,7 @@ class ScenarioTests(unittest.TestCase):
     def test_cap_blocks_exactly_the_expected_options(self):
         for path, s in scenarios():
             with self.subTest(scenario=path.name):
-                over = sorted(o["id"] for o in s["options"] if o["cost"] > CAP_INR)
+                over = sorted(o["id"] for o in s["options"] if o["cost"] > EVENTS[s["event"]]["cap_inr"])
                 self.assertEqual(over, sorted(s["expected"]["blocked_by_cap"]))
                 for oid in s["expected"]["blocked_by_cap"]:
                     self.assertEqual(next(o for o in s["options"] if o["id"] == oid)["status"], "ADVERTISED ONLY")
@@ -102,7 +108,7 @@ class ScenarioTests(unittest.TestCase):
                 self.assertEqual(len(chosen), len(s["expected"]["proposal_options"]))
                 self.assertTrue(all(o["status"] == "CONFIRMED" for o in chosen))
                 self.assertEqual(sum(o["cost"] for o in chosen), s["expected"]["total_cost_inr"])
-                self.assertLessEqual(s["expected"]["total_cost_inr"], CAP_INR)
+                self.assertLessEqual(s["expected"]["total_cost_inr"], EVENTS[s["event"]]["cap_inr"])
 
     def test_only_traveler_sick_splits_the_group(self):
         for path, s in scenarios():

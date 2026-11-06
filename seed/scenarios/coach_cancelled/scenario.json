@@ -1,6 +1,7 @@
 {
   "_note": "Synthetic sample data. Pinewood Holidays, the trip, people and suppliers are fictional.",
   "name": "coach_cancelled",
+  "event": "parvati",
   "title": "Coach HT-22 cancelled",
   "room_name": "Parvati Coach Disruption",
   "trigger": {

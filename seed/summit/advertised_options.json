@@ -1,0 +1,24 @@
+{
+  "_note": "Synthetic sample data. Stand-ins for web search results: advertised, not confirmed with the supplier.",
+  "currency": "INR",
+  "seating": [
+    {
+      "id": "V3",
+      "item": "VIP lounge seating: sofas on a raised platform at the front of Hall A",
+      "seats_added": 12,
+      "together": true,
+      "ready": "10:30",
+      "cost": 72000,
+      "status": "ADVERTISED ONLY"
+    }
+  ],
+  "catering": [
+    {
+      "id": "K2",
+      "item": "10 premium vegetarian lunch boxes from an outside caterer, 1,800 INR each",
+      "meals": 10,
+      "cost": 18000,
+      "status": "ADVERTISED ONLY"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "_note": "Synthetic sample data. A fictional partner delegation. Counts and group preferences only, no names.",
+  "delegation": "Harbourline Group partner delegation",
+  "guests": 10,
+  "arrive": "09:00",
+  "arrive_at": "Foyer",
+  "seating_wish": "together, at the front of Hall A",
+  "diet": {
+    "preference": "vegetarian",
+    "vegetarian": 10
+  },
+  "welcome_speech": {
+    "by": "Ragul",
+    "length_minutes": 5,
+    "where": "Hall A",
+    "before": "Opening keynote"
+  }
+}

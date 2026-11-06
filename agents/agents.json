@@ -6,14 +6,14 @@
       "description": "Opens, links and archives disruption rooms for Pinewood Holidays.",
       "instructions": "Follow CLAUDE.md in your directory. Act only on requests in a room; stop and post the exact error if a Switch tool fails.",
       "addressing": "owner-agents",
-      "rooms": ["Pinewood HQ", "Parvati Trek"]
+      "rooms": ["Pinewood HQ", "Parvati Trek", "Switch Summit"]
     },
     {
       "name": "support-agent",
       "description": "Answers Parvati Valley Trek travelers from the trip plan; never guesses.",
       "instructions": "Follow CLAUDE.md in your directory.",
       "addressing": "anyone",
-      "rooms": ["Parvati Trek"]
+      "rooms": ["Parvati Trek", "Switch Summit"]
     },
     {
       "name": "transport-agent",
@@ -35,6 +35,20 @@
       "instructions": "Follow CLAUDE.md in your directory. Reply only when addressed; take facts only from the seed files and the room.",
       "addressing": "owner-agents",
       "rooms": []
+    },
+    {
+      "name": "venue-agent",
+      "description": "Finds seating for Switch Summit sessions from the venue sheet; labels CONFIRMED or ADVERTISED ONLY.",
+      "instructions": "Follow CLAUDE.md in your directory. Reply only when addressed; take facts only from the seed files and the room.",
+      "addressing": "owner-agents",
+      "rooms": []
+    },
+    {
+      "name": "catering-agent",
+      "description": "Finds meals for Switch Summit changes and drafts the kitchen note (counts only); labels CONFIRMED or ADVERTISED ONLY.",
+      "instructions": "Follow CLAUDE.md in your directory. Reply only when addressed; take facts only from the seed files and the room.",
+      "addressing": "owner-agents",
+      "rooms": []
     }
   ],
   "rooms": [
@@ -49,6 +63,13 @@
       "name": "Parvati Trek",
       "description": "Parvati Valley Trek: travelers and the support agent.",
       "instructions_file": "rooms/parvati-trek.md",
+      "channel_type": "channel_public",
+      "agents": ["support-agent", "coordinator-agent"]
+    },
+    {
+      "name": "Switch Summit",
+      "description": "Switch Summit 2026: conference attendees and the support agent.",
+      "instructions_file": "rooms/switch-summit.md",
       "channel_type": "channel_public",
       "agents": ["support-agent", "coordinator-agent"]
     }

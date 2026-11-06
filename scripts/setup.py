@@ -180,7 +180,7 @@ def template():
     resources["pinewood"] = {
         "type": "group",
         "name": "Pinewood Holidays",
-        "description": "TripRescue base rooms: operator HQ and the trip room.",
+        "description": "TripRescue base rooms: operator HQ, the trip room and the summit attendee room.",
     }
     doc = {
         "version": 2,
@@ -218,8 +218,8 @@ def main():
         print(f"[{'PASS' if ok else 'FAIL'}] {name}: {detail}")
     print()
     print("All checks passed." if not failed else f"{failed} check(s) failed.")
-    print("Not checked here (look in Switch Console): the five agents are registered and running,")
-    print("and the rooms Pinewood HQ and Parvati Trek exist. Print the fields with: python scripts/setup.py --agents")
+    print("Not checked here (look in Switch Console): the six agents are registered and running,")
+    print("and the rooms Pinewood HQ, Parvati Trek and Switch Summit exist. Print the fields with: python scripts/setup.py --agents")
     return 1 if failed else 0
 
 

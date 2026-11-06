@@ -1,12 +1,12 @@
 # Role: ops-desk
 
-**Holders:** one agent at a time (exclusive). `coordinator-agent` takes it when it opens the room and collects the specialists' answers; then it hands the desk to `support-agent`, which writes the proposal and tells the travelers.
-**Room:** any Parvati disruption room (named by the scenario)
+**Holders:** one agent at a time (exclusive). `coordinator-agent` takes it when it opens the room and collects the specialists' answers; then it hands the desk to `support-agent`, which writes the proposal and tells the travelers or attendees.
+**Room:** any disruption room (named by the scenario)
 
 ## Job
 
-- Kick off the specialists (transport, hotel, itinerary) and collect their answers.
-- Check the total cost against the room's 25,000 INR cap (there is no budget agent).
+- Kick off the specialists (the scenario's roles) and collect their answers.
+- Check the total cost against the room's cap in the room rules (there is no budget agent).
 - When every specialist has answered, the setting-up holder hands over (see below); the new holder assembles one proposal that fits the room rules and sends it to the organizer.
 - Handle the organizer's changes, ask the affected specialist to re-check, and resend.
 - Record the organizer's approval in the room.

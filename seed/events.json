@@ -1,0 +1,33 @@
+{
+  "_note": "Synthetic sample data. The events Pinewood Holidays runs. Each scenario names its event; coordinator-agent and scripts/run_scenario.py read the event's room, room file, cap, reference and head count from here.",
+  "events": {
+    "parvati": {
+      "title": "Parvati Valley Trek",
+      "room_key": "trip_room",
+      "room_short": "the trip room",
+      "label": "the trip room (#parvati-trek, or your Telegram group)",
+      "audience": "travelers",
+      "people": "20 travelers",
+      "facts_file": "seed/trip.json",
+      "room_file": "rooms/parvati-disruption.md",
+      "link_label": "parent trip",
+      "cap_inr": 25000,
+      "reference": {"name": "Pinewood supplier sheet", "path": "seed/supplier_sheet.json"},
+      "privacy": "no options, names or health details"
+    },
+    "summit": {
+      "title": "Switch Summit 2026",
+      "room_key": "summit_room",
+      "room_short": "the attendee room",
+      "label": "the attendee room (#switch-summit)",
+      "audience": "attendees",
+      "people": "180 attendees (6 speakers, 10 VIPs, 8 wheelchair spaces needed)",
+      "facts_file": "seed/summit/event.json",
+      "room_file": "rooms/summit-disruption.md",
+      "link_label": "parent event",
+      "cap_inr": 60000,
+      "reference": {"name": "Switch Summit venue sheet", "path": "seed/summit/venue_sheet.json"},
+      "privacy": "no options, names or individual needs"
+    }
+  }
+}

@@ -1,6 +1,7 @@
 {
   "_note": "Synthetic sample data. Pinewood Holidays, the trip, people and suppliers are fictional.",
   "name": "heavy_rain",
+  "event": "parvati",
   "title": "Heavy rain cancels the afternoon trek",
   "room_name": "Parvati Rain Disruption",
   "trigger": {

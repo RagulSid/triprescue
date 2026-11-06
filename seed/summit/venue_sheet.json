@@ -1,0 +1,47 @@
+{
+  "_note": "Synthetic sample data. Everything in this sheet is CONFIRMED with the venue.",
+  "currency": "INR",
+  "venue": "Lakeside Convention Centre",
+  "seating": [
+    {
+      "id": "V1",
+      "item": "Add a reserved VIP row of 12 chairs in front of row 1 in Hall A",
+      "room": "Hall A",
+      "seats_added": 12,
+      "front_seats_after": 34,
+      "together": true,
+      "ready": "09:15",
+      "cost": 6000,
+      "status": "CONFIRMED"
+    },
+    {
+      "id": "V2",
+      "item": "Reserve row 2 of Hall A for the new guests",
+      "room": "Hall A",
+      "seats_added": 0,
+      "front_seats_after": 22,
+      "together": true,
+      "front_row": false,
+      "ready": "09:00",
+      "cost": 0,
+      "status": "CONFIRMED"
+    }
+  ],
+  "catering": [
+    {
+      "id": "K1",
+      "item": "10 extra lunches from the in-house kitchen, any listed diet, 450 INR each",
+      "meals": 10,
+      "cost": 4500,
+      "tell_kitchen_by": "10:00",
+      "max_extra_meals": 20,
+      "status": "CONFIRMED"
+    }
+  ],
+  "stage": {
+    "id": "stage-hall-a",
+    "item": "Stage and microphone in Hall A, ready from 09:00",
+    "extra_cost": 0,
+    "status": "CONFIRMED"
+  }
+}

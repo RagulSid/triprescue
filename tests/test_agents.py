@@ -68,14 +68,14 @@ class AgentTests(unittest.TestCase):
         for res in doc["resources"].values():
             kinds.setdefault(res["type"], []).append(res["name"])
         self.assertEqual(sorted(kinds["agent"]), sorted(NAMES))
-        self.assertEqual(sorted(kinds["room"]), ["Parvati Trek", "Pinewood HQ"])
+        self.assertEqual(sorted(kinds["room"]), ["Parvati Trek", "Pinewood HQ", "Switch Summit"])
         self.assertEqual(len(kinds["group"]), 1)
 
 
 class RoomConfigTests(unittest.TestCase):
     def test_coordinator_and_scripts_take_room_names_from_config(self):
         cfg = json.loads((ROOT / "rooms" / "rooms.json").read_text(encoding="utf-8"))
-        self.assertEqual((cfg["trip_room"], cfg["hq_room"]), ("Parvati Trek", "Pinewood HQ"))
+        self.assertEqual((cfg["trip_room"], cfg["summit_room"], cfg["hq_room"]), ("Parvati Trek", "Switch Summit", "Pinewood HQ"))
         brief = (ROOT / "agents" / "coordinator-agent" / "CLAUDE.md").read_text(encoding="utf-8")
         self.assertIn("../../rooms/rooms.local.json", brief)
         self.assertIn("../../rooms/rooms.json", brief)

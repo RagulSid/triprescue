@@ -1,0 +1,113 @@
+{
+  "_note": "Synthetic sample data. Pinewood Holidays, Switch Summit 2026, the venue, the delegation, people and suppliers are fictional. Guest needs are counts only, never names.",
+  "name": "vip_guests",
+  "event": "summit",
+  "title": "Ten VIP guests arriving today",
+  "room_name": "Summit VIP Arrival",
+  "trigger": {
+    "description": "At the Switch Summit conference, a partner delegation of 10 VIP guests arrives today at 09:00: they need seats together at the front, vegetarian lunches (the kitchen must be told), and a short welcome speech.",
+    "signs": [
+      "extra VIP guests, a delegation or visitors are joining the conference",
+      "they need seats, special meals or a welcome",
+      "the kitchen or catering team must be told about extra or vegetarian meals"
+    ],
+    "examples": [
+      "A partner delegation of 10 VIP guests is joining us today. They need good seats together, they prefer vegetarian food, and we want to give them a welcome speech.",
+      "We have 10 extra VIPs arriving at 09:00. Can you sort their seating, let the kitchen know they're vegetarian, and fit in a welcome?",
+      "Ten VIP guests from a partner delegation are coming to the summit today: plan their seats, a veg lunch and a short welcome speech."
+    ]
+  },
+  "notice": "Message from Ragul, 08:10: a partner delegation of 10 VIP guests (Harbourline Group) arrives at 09:00 today. They should sit together at the front of Hall A, they prefer vegetarian food, and we want to welcome them with a short speech.",
+  "roles": [
+    "ops-desk",
+    "seating",
+    "catering",
+    "itinerary"
+  ],
+  "data_files": [
+    "seed/summit/event.json",
+    "seed/summit/venue_sheet.json",
+    "seed/summit/advertised_options.json",
+    "seed/scenarios/vip_guests/delegation.json"
+  ],
+  "changed_facts": [
+    "10 VIP guests from a partner delegation arrive at 09:00 today; 190 people now need seats (180 attendees and 10 guests).",
+    "The guests sit together at the front of Hall A, next to the 6 speakers and 10 existing VIPs (26 front seats needed; row 1 has 22).",
+    "The guests prefer vegetarian lunches: the kitchen must be told by 10:00 (counts only, no names).",
+    "A 5-minute welcome speech by Ragul in Hall A before the opening keynote."
+  ],
+  "asks": {
+    "seating": "Every way to seat the 10 guests together at the front of Hall A from the venue sheet and the advertised options: front seats against 26, ready time, cost and label, and what the 60,000 INR cap blocks.",
+    "catering": "Lunch for 10 extra vegetarian guests from the venue sheet and the advertised options: cost, label and the kitchen's deadline, plus a draft note to the kitchen with counts only.",
+    "itinerary": "Fit a 5-minute welcome speech into today's agenda in Hall A (check the stage with venue-agent), say what moves, and draft the speech (at most 5 sentences, facts from the seed files only) for Ragul to give."
+  },
+  "options": [
+    {
+      "id": "V1",
+      "owner": "seating",
+      "summary": "Reserved VIP row of 12 chairs in front of row 1 in Hall A, ready 09:15 (34 front seats)",
+      "cost": 6000,
+      "status": "CONFIRMED",
+      "source": "seed/summit/venue_sheet.json"
+    },
+    {
+      "id": "V2",
+      "owner": "seating",
+      "summary": "Row 2 of Hall A reserved for the guests (not the front row)",
+      "cost": 0,
+      "status": "CONFIRMED",
+      "source": "seed/summit/venue_sheet.json"
+    },
+    {
+      "id": "V3",
+      "owner": "seating",
+      "summary": "VIP lounge sofas on a raised platform, ready 10:30",
+      "cost": 72000,
+      "status": "ADVERTISED ONLY",
+      "source": "seed/summit/advertised_options.json"
+    },
+    {
+      "id": "K1",
+      "owner": "catering",
+      "summary": "10 extra lunches from the in-house kitchen at 450 INR each, tell the kitchen by 10:00",
+      "cost": 4500,
+      "status": "CONFIRMED",
+      "source": "seed/summit/venue_sheet.json"
+    },
+    {
+      "id": "K2",
+      "owner": "catering",
+      "summary": "10 premium vegetarian lunch boxes from an outside caterer",
+      "cost": 18000,
+      "status": "ADVERTISED ONLY",
+      "source": "seed/summit/advertised_options.json"
+    }
+  ],
+  "organizer_change": "One of the ten guests is vegan, not vegetarian.",
+  "expected": {
+    "proposal_options": [
+      "V1",
+      "K1"
+    ],
+    "blocked_by_cap": [
+      "V3"
+    ],
+    "total_cost_inr": 10500,
+    "split_needs_approval": false,
+    "travelers_told": "We welcome a partner delegation with a short speech at 09:30 in Hall A; the opening keynote now runs 09:35 to 10:35, and the coffee break 10:35 to 11:00. Everything else is unchanged.",
+    "open_items": [
+      "Send the kitchen note by 10:00 (9 vegetarian and 1 vegan extra lunches)",
+      "Who meets the guests in the Foyer at 09:00",
+      "Ragul reviews the welcome speech draft"
+    ],
+    "notes": [
+      "**Seating:** V1 reserved VIP row of 12 chairs in front of row 1 in Hall A, ready 09:15, 34 front seats for 26 people, 6,000 INR, CONFIRMED. V2 row 2 (0 INR, CONFIRMED) seats them together but not at the front. V3 lounge sofas (72,000 INR) ADVERTISED ONLY and BLOCKED BY CAP.",
+      "**Catering:** K1 10 extra lunches from the in-house kitchen, 4,500 INR, CONFIRMED, tell the kitchen by 10:00; K2 outside lunch boxes (18,000 INR) ADVERTISED ONLY. Draft kitchen note with counts only.",
+      "**Itinerary:** welcome speech 09:30 to 09:35 in Hall A (stage ready from 09:00); keynote 09:35 to 10:35; coffee break 10:35 to 11:00; Track 1 at 11:00 and everything after unchanged. A 5-sentence speech draft for Ragul.",
+      "**Proposal:** one plan, V1 and K1, 10,500 of 60,000 INR, every attendee and guest seated.",
+      "**Organizer's change:** one guest is vegan; catering-agent re-checks: 9 vegetarian and 1 vegan from the same kitchen, same 4,500 INR.",
+      "**Attendees told:** the welcome at 09:30 and the new keynote and break times only; no names, diets or individual needs.",
+      "**Open items for a person:** send the kitchen note by 10:00; who meets the guests at 09:00; review the speech."
+    ]
+  }
+}
