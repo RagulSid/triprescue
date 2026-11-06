@@ -10,7 +10,8 @@
     { "time": "08:30", "item": "Coach HT-22 leaves Manali for Kasol", "ref": "HT-22" },
     { "time": "13:00", "item": "Coach HT-22 arrives in Kasol", "ref": "HT-22" },
     { "time": "14:00", "item": "Check-in at Riverbend Camp", "ref": "riverbend-camp" },
-    { "time": "15:30", "item": "Afternoon trek with guide Tenzin", "ref": "guide-tenzin" }
+    { "time": "15:30", "item": "Afternoon trek with guide Tenzin", "ref": "guide-tenzin" },
+    { "time": "19:30", "item": "Dinner at Riverbend Camp; if the group arrives late, the camp holds dinner until 20:30", "ref": "riverbend-camp" }
   ],
   "tomorrow": [
     { "time": "10:00", "item": "Group departs for Tosh", "ref": "tosh-departure" }

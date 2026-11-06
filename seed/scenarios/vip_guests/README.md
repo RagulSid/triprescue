@@ -53,10 +53,10 @@ If it is unsure, it asks one short question; answer it in the same thread. To fo
 
 - **Seating:** V1 reserved VIP row of 12 chairs in front of row 1 in Hall A, ready 09:15, 34 front seats for 26 people, 6,000 INR, CONFIRMED. V2 row 2 (0 INR, CONFIRMED) seats them together but not at the front. V3 lounge sofas (72,000 INR) ADVERTISED ONLY and BLOCKED BY CAP.
 - **Catering:** K1 10 extra lunches from the in-house kitchen, 4,500 INR, CONFIRMED, tell the kitchen by 10:00; K2 outside lunch boxes (18,000 INR) ADVERTISED ONLY. Draft kitchen note with counts only.
-- **Itinerary:** welcome speech 09:30 to 09:35 in Hall A (stage ready from 09:00); keynote 09:35 to 10:35; coffee break 10:35 to 11:00; Track 1 at 11:00 and everything after unchanged. A 5-sentence speech draft for Ragul.
+- **Itinerary:** a 5-minute welcome in Hall A that fits without moving any other session (for example just before the 09:30 keynote; the stage is ready from 09:00). venue-agent confirms the stage is free and the VIP row is set before the welcome. If a session has to move, the agenda says exactly what moves. A speech draft of at most 5 sentences for Ragul.
 - **Proposal:** one plan, V1 and K1, 10,500 of 60,000 INR, every attendee and guest seated.
 - **Organizer's change:** one guest is vegan; catering-agent re-checks: 9 vegetarian and 1 vegan from the same kitchen, same 4,500 INR.
-- **Attendees told:** the welcome at 09:30 and the new keynote and break times only; no names, diets or individual needs.
+- **Attendees told:** the welcome's time and place, and that the other sessions are unchanged (or exactly what moves); no names, diets or individual needs.
 - **Open items for a person:** send the kitchen note by 10:00; who meets the guests at 09:00; review the speech.
 
 ## Check it

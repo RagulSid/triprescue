@@ -11,6 +11,7 @@
     "deny": [
       "Read(../../.env)",
       "Read(../../docs/**)",
+      "Read(../../seed/supplier_sheet.json)",
       "Edit",
       "Write",
       "Bash",

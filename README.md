@@ -2,7 +2,7 @@
 
 > Every disruption has another route.
 
-A team of AI agents and one person rescues a group trip when something breaks. Built on [Switch](https://docs.switchagents.ai/) for the Flip the Switch Hackathon (Track 01, Best Business Workflow).
+A team of AI agents and one person rescues a group trip when something breaks, and a conference day when its plan changes. Built on [Switch](https://docs.switchagents.ai/) for the Flip the Switch Hackathon (Track 01, Best Business Workflow).
 
 **Demo video:** _link added at submission_
 
@@ -25,6 +25,16 @@ TripRescue changes three things:
 The organizer approves **one** proposal, and the travelers get **one** message. No agent books or pays.
 
 Pinewood Holidays, the Parvati Valley Trek, its travelers and its suppliers are all fictional (see [Sample data](#sample-data)).
+
+### Same workflow, second business: Switch Summit
+
+Pinewood also runs a one-day conference, **Switch Summit 2026** (fictional, 180 attendees). The organizer writes in the attendee room: "A partner delegation of 10 VIP guests is joining us today…". The same coordinator opens a private room with three different specialists:
+
+- **venue-agent** seats the guests together at the front within the 60,000 INR cap (a lounge option over the cap is blocked).
+- **catering-agent** finds 10 extra vegetarian lunches and drafts the kitchen note, counts only.
+- **itinerary-agent** fits a welcome speech in without moving other sessions, checks the stage with venue-agent, and drafts the speech for the organizer.
+
+The ops desk changes hands and the organizer approves one plan, exactly as on the trek. Attendees hear only the welcome time and that the agenda stands, with no names or diets. Only the data, the room rules and two specialists are new. Each event's room, rules file, cap and reference are in [`seed/events.json`](seed/events.json), and a message can only match its own event's scenarios.
 
 ## How it works
 
@@ -59,29 +69,31 @@ In the demo, travelers are in a Telegram group, while Pinewood HQ and the privat
 
 | Switch feature | What it does in TripRescue |
 | --- | --- |
-| **Rooms** | Pinewood HQ (operator base), Parvati Trek (travelers), and one disruption room per incident, created by an agent with `create_room` and private, so travelers never see options under discussion. |
-| **Room instructions** | The four business rules (cost cap, keep the group together, agents propose / organizer approves, label every option) are written once in [`rooms/parvati-disruption.md`](rooms/parvati-disruption.md) and read by every agent in the room. No rule is in code. |
-| **Roles** | `ops-desk`, `transport`, `hotel`, `itinerary` ([`rooms/roles/`](rooms/roles/)). The ops desk is a job, not an agent: coordinator-agent holds it while answers come in, then releases it, and support-agent assumes it and continues from the room history. |
-| **Linked rooms** | Each disruption room links to Parvati Trek (`parent trip`) and Pinewood HQ (`escalation`), so agents know where to tell travelers and where to report. |
-| **References** | The supplier sheet is attached to the disruption room as a reference. |
+| **Rooms** | Pinewood HQ (operator base), Parvati Trek (travelers), Switch Summit (conference attendees), and one disruption room per incident, created by an agent with `create_room` and private, so travelers never see options under discussion. |
+| **Room instructions** | The four business rules (cost cap, keep the group together, agents propose / organizer approves, label every option) are written once in [`rooms/parvati-disruption.md`](rooms/parvati-disruption.md) and read by every agent in the room. The summit has its own five rules (60,000 INR cap, everyone seated with VIP and wheelchair seats kept, needs as counts only) in [`rooms/summit-disruption.md`](rooms/summit-disruption.md). No rule is in code. |
+| **Roles** | `ops-desk`, `transport`, `hotel`, `itinerary`, and for the summit `seating` and `catering` ([`rooms/roles/`](rooms/roles/)). The ops desk is a job, not an agent: coordinator-agent holds it while answers come in, then releases it, and support-agent assumes it and continues from the room history. |
+| **Linked rooms** | Each disruption room links to its event room (Parvati Trek as `parent trip`, Switch Summit as `parent event`) and Pinewood HQ (`escalation`), so agents know where to tell travelers or attendees and where to report. |
+| **References** | The event's sheet (trek supplier sheet or summit venue sheet) is attached to the disruption room as a reference. |
 | **Targeted messages** | Agents ask each other with `send_targeted_message` (by name, or by role such as `@ops-desk`). Only addressed messages wake an agent, so each one works when asked and stays quiet otherwise. |
 | **Human approval** | The organizer approves in the room. A split of the group needs its own explicit approval. The approval is recorded as a line in the room. |
 | **Archive** | `archive_room` closes the disruption and keeps its history. The close-out summary goes to HQ, and a short note goes to the trip room. |
 | **Chat apps** | Mattermost, bundled with the local Switch server, hosts Pinewood HQ and the private disruption rooms. Commands use `!`, e.g. `!list-agents`. In the demo, travelers are on Telegram. One Switch bot serves every agent there, and the disruption room links to the Telegram room like any other. Room rules do not depend on the chat app. |
 
-**The remove-Switch test:** without Switch you have five separate chatbots with no shared room history, no rules they all read, no role that can pass between them, and no approval step. The workflow cannot run.
+**The remove-Switch test:** without Switch you have seven separate chatbots with no shared room history, no rules they all read, no role that can pass between them, and no approval step. The workflow cannot run.
 
 ## Agents
 
-All five are existing Claude Code agents run by Switch Console. Each one's brief is a `CLAUDE.md` in its own folder, and its permissions are in `.claude/settings.json`.
+All seven are existing Claude Code agents run by Switch Console. The trek uses transport, hotel and itinerary; the summit uses venue, catering and itinerary; coordinator and support serve both. Each one's brief is a `CLAUDE.md` in its own folder, and its permissions are in `.claude/settings.json`.
 
 | Agent | Model | Job | Cannot |
 | --- | --- | --- | --- |
 | [`coordinator-agent`](agents/coordinator-agent/CLAUDE.md) | claude-sonnet-5-5 | Matches the organizer's words to a scenario (or asks one plain question), opens the disruption room from the scenario file, holds ops-desk while specialists answer, hands over, closes and archives | Edit files, run commands |
-| [`support-agent`](agents/support-agent/CLAUDE.md) | claude-sonnet-5-5 | Answers travelers from the trip plan, takes over ops-desk, writes the single proposal, tells travelers the approved plan | Create, link or archive rooms, invite agents |
+| [`support-agent`](agents/support-agent/CLAUDE.md) | claude-sonnet-5-5 | Answers travelers and attendees from their event's plan, takes over ops-desk, writes the single proposal, tells them the approved plan | Create, link or archive rooms, invite agents |
 | [`transport-agent`](agents/transport-agent/CLAUDE.md) | claude-haiku-5-5 | Replacement transport from the supplier sheet, labelled CONFIRMED or ADVERTISED ONLY | Create, link or archive rooms |
 | [`hotel-agent`](agents/hotel-agent/CLAUDE.md) | claude-haiku-5-5 | Late check-in, meal and room changes | Create, link or archive rooms |
-| [`itinerary-agent`](agents/itinerary-agent/CLAUDE.md) | claude-sonnet-5-5 | Rebuilds the day and checks knock-ons, such as the next day's departure | Create, link or archive rooms |
+| [`itinerary-agent`](agents/itinerary-agent/CLAUDE.md) | claude-sonnet-5-5 | Rebuilds the day or the summit agenda and checks knock-ons; drafts the welcome speech | Create, link or archive rooms |
+| [`venue-agent`](agents/venue-agent/CLAUDE.md) | claude-haiku-5-5 | Summit seating from the venue sheet: front seats, groups together, wheelchair spaces, the stage | Create, link or archive rooms |
+| [`catering-agent`](agents/catering-agent/CLAUDE.md) | claude-haiku-5-5 | Summit meals by diet (counts only) and the draft kitchen note; sends nothing | Create, link or archive rooms |
 
 No agent can read `.env` or write files. [`tests/test_agents.py`](tests/test_agents.py) checks these permissions.
 
@@ -112,24 +124,24 @@ The Mattermost check passes after step 3. The demo needs no `.env` or tokens.
 
 In Switch Console, start the local server. The first start downloads a few GB. It brings up the bundled Mattermost. Sign in to Mattermost from Console (the exact screen is **Unverified** for a fresh install).
 
-### 4. Register the five agents (manual, about 5 minutes)
+### 4. Register the agents (manual, about 5 minutes)
 
-Run `python scripts/setup.py --agents`. It prints every field below with this clone's real paths.
+Every field for every agent and room is in [CONSOLE_SETUP.md](CONSOLE_SETUP.md), ready to copy.
 
 In Switch Console: **Your Agents** → the **+** card. Fill in the form once per agent, then **Add agent**.
 
 | Field | Value |
 | --- | --- |
-| Name | `coordinator-agent`, `support-agent`, `transport-agent`, `hotel-agent`, `itinerary-agent` |
+| Name | `coordinator-agent`, `support-agent`, `transport-agent`, `hotel-agent`, `itinerary-agent`, `venue-agent`, `catering-agent` |
 | Description | One line from [`agents/agents.json`](agents/agents.json) |
 | Agent instructions | From `agents/agents.json`. Each is a short pointer like "Follow CLAUDE.md in your directory." The real brief is the folder's `CLAUDE.md`. |
 | Run location | This computer |
 | Directory | `<clone>/agents/<name>` |
 | Agent provider | Claude Code. Leave the model alone: it comes from `.claude/settings.json`. |
 
-Then open **support-agent** → **Who can talk to your agent** and allow travelers (anyone) to address it. Leave the other four on the default, which is you and your agents. That is all the specialists need.
+Then open **support-agent** → **Who can talk to your agent** and allow travelers (anyone) to address it. Leave the others on the default, which is you and your agents. That is all the specialists need.
 
-### 5. Create the two base rooms (manual, about 2 minutes)
+### 5. Create the base rooms (manual, about 3 minutes)
 
 In Switch Console: **Your Rooms** → **Create room**, messaging app **Mattermost**.
 
@@ -137,6 +149,7 @@ In Switch Console: **Your Rooms** → **Create room**, messaging app **Mattermos
 | --- | --- | --- |
 | `Pinewood HQ` | coordinator-agent | [`rooms/pinewood-hq.md`](rooms/pinewood-hq.md) |
 | `Parvati Trek` | support-agent, coordinator-agent | [`rooms/parvati-trek.md`](rooms/parvati-trek.md) |
+| `Switch Summit` | support-agent, coordinator-agent | [`rooms/switch-summit.md`](rooms/switch-summit.md) |
 
 The names must match exactly: coordinator-agent finds these rooms by the names in [`rooms/rooms.json`](rooms/rooms.json). Disruption rooms are created by the agent, not by you.
 
@@ -154,7 +167,7 @@ Check: type `!list-agents` in `#parvati-trek` and it lists the agents.
 
 ### Shortcut for steps 4 and 5: a Switch template (Unverified)
 
-`python scripts/setup.py --template > ../triprescue-template.yaml` writes a version 2 [Switch template](https://docs.switchagents.ai/switch-rooms/administer/room-templates). It creates the five agents and both rooms with this clone's paths.
+`python scripts/setup.py --template > ../triprescue-template.yaml` writes a version 2 [Switch template](https://docs.switchagents.ai/switch-rooms/administer/room-templates). It creates the seven agents and the three rooms with this clone's paths.
 
 In Switch Console, use **Templates** → **Import template**, then **Use**.
 
@@ -169,23 +182,25 @@ Each scenario has a guide with the four messages to copy, in order, what to wait
 | `coach_cancelled` | The 08:30 coach is withdrawn; check-in and the trek break | [guide](seed/scenarios/coach_cancelled/README.md) |
 | `heavy_rain` | Rain closes the afternoon trek trail | [guide](seed/scenarios/heavy_rain/README.md) |
 | `traveler_sick` | One traveler is unwell and leaves; the group splits only with explicit approval | [guide](seed/scenarios/traveler_sick/README.md) |
+| `vip_guests` (summit) | 10 VIP guests arrive: seats together at the front, vegetarian lunches, a welcome speech | [guide](seed/scenarios/vip_guests/README.md) |
 
 In short:
-1. In the trip room, tell `@coordinator-agent` what went wrong, in your own words. Each guide has example wordings. If the message is vague or contradicts the trip data, the coordinator asks one plain question first. A line `Scenario: <name>` forces a scenario.
+1. In the trip room (or `#switch-summit` for the summit), tell `@coordinator-agent` what went wrong or what has to change, in your own words. Each guide has example wordings. If the message is vague or contradicts the trip data, the coordinator asks one plain question first. A line `Scenario: <name>` forces a scenario.
 2. Wait for the proposal in the new private room.
 3. Approve with one change.
 4. Give final approval.
 5. Ask the coordinator to close the room.
 
-Run one scenario at a time. On our machine a full run took about 5 to 10 minutes, including the organizer's pauses, and 4 to 5 agent sessions.
+Run one scenario at a time. On our machine a full run took about 5 to 11 minutes, including the organizer's pauses, and 4 to 7 agent sessions.
 
 ## Sample data
 
-Everything in [`seed/`](seed/) is synthetic: the operator, trip, travelers, suppliers, prices and the sample clinic in `traveler_sick`. Emails use the reserved `example.com` domain.
+Everything in [`seed/`](seed/) is synthetic: the operator, trip, travelers, suppliers, prices, the sample clinic in `traveler_sick`, and the Switch Summit conference, venue and delegation. Emails use the reserved `example.com` domain.
 
 - [`seed/supplier_sheet.json`](seed/supplier_sheet.json) holds options marked CONFIRMED.
 - Options marked ADVERTISED ONLY stand in for web search results; each scenario includes one, and the cap blocks it.
 - `traveler_sick` covers logistics only, with no medical details or advice.
+- [`seed/summit/`](seed/summit/) holds the conference plan and venue sheet. Attendee and guest needs (diets, wheelchair spaces) are counts only, never tied to a name.
 
 ## What is mocked
 
@@ -199,7 +214,7 @@ Everything in [`seed/`](seed/) is synthetic: the operator, trip, travelers, supp
 - **Address agents with an @mention.** Only addressed messages wake an agent. In our tests a Mattermost post without an @mention sometimes did not reach the agents at all; the cause is **Unverified**. Every message in the guides starts with `@coordinator-agent` or `@ops-desk`.
 - **In Telegram, use the `@name` form.** A message that starts with the bare agent name (`coordinator-agent …`) is not routed to the agent. Write `@coordinator-agent …`.
 - **Telegram shows Switch's status lines.** Everyone in the group sees Switch's status lines ("Starting a session…", "Working…") and its `/` command menu. We found no setting to hide them from travelers. The agents' own messages to travelers contain no ids or technical detail.
-- **The Mattermost channel may stay open after archiving.** `archive_room` archives the room in Switch. In our last three runs the Mattermost channel was also archived, about 25 seconds later. In earlier runs it stayed open until a Mattermost admin archived it. We have not found the cause. If the channel stays open, an admin can archive it (or run `run_scenario.py --archive-channel`).
+- **The Mattermost channel may stay open after archiving.** `archive_room` archives the room in Switch. In our recent runs the Mattermost channel was also archived, within a minute. In earlier runs it stayed open until a Mattermost admin archived it. We have not found the cause. If the channel stays open, an admin can archive it (or run `run_scenario.py --archive-channel`).
 - **Windows notes.**
   - If agents answer in Console but never in Mattermost, see [WINDOWS.md](WINDOWS.md); WSL mirrored networking breaks the websocket.
   - Agents need Switch Console open and the laptop awake.
@@ -212,12 +227,14 @@ Everything in [`seed/`](seed/) is synthetic: the operator, trip, travelers, supp
 ```text
 agents/<name>/CLAUDE.md          each agent's brief
 agents/<name>/.claude/settings.json   model and permissions
-agents/agents.json               Console registration fields
+agents/agents.json               Console registration fields (CONSOLE_SETUP.md lists them)
 rooms/*.md                       room instructions (the rules)
 rooms/roles/*.md                 role descriptions
 seed/                            synthetic trip, travelers, supplier sheet
+seed/events.json                 each event's room, rules file, cap and reference
+seed/summit/                     Switch Summit plan, venue sheet, advertised options
 seed/scenarios/<name>/           scenario data and copy-paste guide
-scripts/setup.py                 machine check, Console fields, template
+scripts/setup.py                 machine check and template
 scripts/run_scenario.py          scenario guides (+ optional DB checks)
 tests/                           seed, scenario and agent-permission tests
 ```

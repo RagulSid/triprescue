@@ -83,21 +83,37 @@ class SummitSeedTests(unittest.TestCase):
         v1 = next(o for o in load("venue_sheet.json")["seating"] if o["id"] == "V1")
         self.assertGreaterEqual(hall_a["seats"] + v1["seats_added"], event["attendees"] + guests)
 
-    def test_kitchen_can_take_the_guests_and_the_speech_fits_the_break(self):
+    def test_kitchen_can_take_the_guests(self):
         k1 = next(o for o in load("venue_sheet.json")["catering"] if o["id"] == "K1")
         guests = json.loads((VIP / "delegation.json").read_text(encoding="utf-8"))
         self.assertGreaterEqual(k1["max_extra_meals"], guests["guests"])
         self.assertEqual(k1["meals"], guests["guests"])
+
+    def test_welcome_fits_without_moving_any_session(self):
+        """Constraints, not exact times: a welcome can end at the keynote's start once the stage, the VIP row and
+        the guests are all there; and if a session had to move instead, the coffee break absorbs it."""
+        sheet, guests = load("venue_sheet.json"), json.loads((VIP / "delegation.json").read_text(encoding="utf-8"))
         agenda = {i["item"]: i for i in load("event.json")["today"]}
         minutes = lambda hhmm: int(hhmm[:2]) * 60 + int(hhmm[3:])
         speech = guests["welcome_speech"]["length_minutes"]
+        v1 = next(o for o in sheet["seating"] if o["id"] == "V1")
+        latest_start = minutes(agenda["Opening keynote"]["time"]) - speech
+        for ready in (sheet["stage"]["ready"], v1["ready"], guests["arrive"]):
+            self.assertLessEqual(minutes(ready), latest_start, ready)
         brk = agenda["Coffee break"]
         self.assertEqual(agenda["Opening keynote"]["end"], brk["time"])
-        self.assertLess(speech, minutes(brk["end"]) - minutes(brk["time"]))  # the keynote shift is absorbed by the break
-        told = json.loads((VIP / "scenario.json").read_text(encoding="utf-8"))["expected"]["travelers_told"]
-        for t in ("09:30", "09:35", "10:35"):
-            self.assertIn(t, told)
+        self.assertLess(speech, minutes(brk["end"]) - minutes(brk["time"]))
+
+    def test_expected_outcome_is_constraints_not_fixed_times(self):
+        s = json.loads((VIP / "scenario.json").read_text(encoding="utf-8"))
+        told = s["expected"]["travelers_told"]
+        self.assertIsNone(re.search(r"\b\d{2}:\d{2}\b", told), "attendee message expectation should not fix times")
+        self.assertIn("unchanged", told)
         self.assertNotRegex(told, r"(?i)vegan|vegetarian|diet|allerg|Harbourline")
+        itinerary = next(n for n in s["expected"]["notes"] if n.startswith("**Itinerary:**"))
+        for phrase in ("without moving any other session", "venue-agent confirms the stage is free", "exactly what moves"):
+            self.assertIn(phrase, itinerary)
+        self.assertEqual(s["expected"]["total_cost_inr"], 10500)
 
     def test_delegation_has_counts_and_no_names(self):
         d = json.loads((VIP / "delegation.json").read_text(encoding="utf-8"))

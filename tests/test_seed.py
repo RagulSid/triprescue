@@ -40,6 +40,14 @@ class SeedTests(unittest.TestCase):
         option_a = next(o for o in load("supplier_sheet.json")["transport"] if o["id"] == "A")
         self.assertGreaterEqual(option_a["seats"], group)
 
+    def test_trip_dinner_matches_the_hotel_hold(self):
+        """Travelers ask about dinner; support-agent reads trip.json only, so the hold must be there too."""
+        dinner = next(i for i in load("trip.json")["today"] if "Dinner" in i["item"])
+        hold = load("supplier_sheet.json")["hotel"]["dinner_held_until"]
+        self.assertIn(hold, dinner["item"])
+        self.assertLess(dinner["time"], hold)
+        self.assertEqual(dinner["ref"], load("supplier_sheet.json")["hotel"]["id"])
+
     def test_traveler_count_matches_trip(self):
         self.assertEqual(len(load("travelers.json")["travelers"]), load("trip.json")["travelers"])
 

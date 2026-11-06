@@ -41,6 +41,7 @@
   "stage": {
     "id": "stage-hall-a",
     "item": "Stage and microphone in Hall A, ready from 09:00",
+    "ready": "09:00",
     "extra_cost": 0,
     "status": "CONFIRMED"
   }

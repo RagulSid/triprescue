@@ -49,6 +49,10 @@ class AgentTests(unittest.TestCase):
                      "send_targeted_message", "post_message", "connect_to_room"):
             self.assertNotIn(f"mcp__switch__{tool}", d)
 
+    def test_support_agent_answers_from_trip_json_not_the_supplier_sheet(self):
+        self.assertIn("Read(../../seed/supplier_sheet.json)", denied("support-agent"))
+        self.assertNotIn("Read(../../seed/trip.json)", denied("support-agent"))
+
     def test_tools_each_agent_loads_are_not_denied(self):
         for name in NAMES:
             text = (ROOT / "agents" / name / "CLAUDE.md").read_text(encoding="utf-8")
