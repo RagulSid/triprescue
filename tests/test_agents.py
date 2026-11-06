@@ -72,6 +72,21 @@ class AgentTests(unittest.TestCase):
         self.assertEqual(len(kinds["group"]), 1)
 
 
+class ConsoleSetupDocTests(unittest.TestCase):
+    def test_console_setup_md_matches_the_registry(self):
+        doc = (ROOT / "CONSOLE_SETUP.md").read_text(encoding="utf-8")
+        for a in REGISTRY["agents"]:
+            with self.subTest(agent=a["name"]):
+                for value in (f"### {a['name']}", a["description"], a["instructions"], f"agents\\{a['name']}`",
+                              settings(a["name"])["model"]):
+                    self.assertIn(value, doc)
+        for r in REGISTRY["rooms"]:
+            with self.subTest(room=r["name"]):
+                for value in (f"| Name | `{r['name']}` |", r["description"], r["instructions_file"]):
+                    self.assertIn(value, doc)
+        self.assertEqual(doc.count("\n### "), len(REGISTRY["agents"]) + len(REGISTRY["rooms"]))
+
+
 class RoomConfigTests(unittest.TestCase):
     def test_coordinator_and_scripts_take_room_names_from_config(self):
         cfg = json.loads((ROOT / "rooms" / "rooms.json").read_text(encoding="utf-8"))

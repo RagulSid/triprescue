@@ -1,5 +1,5 @@
 {
-  "_note": "Console registration for each agent (Your Agents > + card). Directory is agents/<name> in this clone; scripts/setup.py --agents prints the full path. The model comes from each folder's .claude/settings.json, not from Console.",
+  "_note": "Console registration for each agent (Your Agents > + card). Directory is agents/<name> in this clone. CONSOLE_SETUP.md lists every field; a test keeps it in step with this file. The model comes from each folder's .claude/settings.json, not from Console.",
   "agents": [
     {
       "name": "coordinator-agent",

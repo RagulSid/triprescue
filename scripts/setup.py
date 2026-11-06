@@ -2,7 +2,6 @@
 
 Usage:
   python scripts/setup.py              # run every check (exit 0 only if all pass)
-  python scripts/setup.py --agents     # print the Console fields for each agent and room, with this clone's paths
   python scripts/setup.py --template   # print a Switch template (version 2) that creates the agents and rooms
 
 The checks never read Switch Console's credentials or the Switch database, and never print
@@ -126,28 +125,6 @@ def check_tests():
     return True, f"{ran}, OK".strip(", ")
 
 
-def print_agents():
-    reg = registry()
-    print("Switch Console > Your Agents > the + card. For each agent:\n")
-    for a in reg["agents"]:
-        model = json.loads((ROOT / "agents" / a["name"] / ".claude" / "settings.json").read_text(encoding="utf-8"))["model"]
-        print(f"  Name:               {a['name']}")
-        print(f"  Description:        {a['description']}")
-        print(f"  Agent instructions: {a['instructions']}")
-        print(f"  Run location:       This computer")
-        print(f"  Directory:          {ROOT / 'agents' / a['name']}")
-        print(f"  Agent provider:     Claude Code   (model {model} comes from .claude/settings.json)")
-        print(f"  Who can talk to your agent: {'anyone' if a['addressing'] == 'anyone' else 'default (you and your agents)'}")
-        print()
-    print("Switch Console > Your Rooms > Create room. For each room (messaging app: Mattermost):\n")
-    for r in reg["rooms"]:
-        print(f"  Name:         {r['name']}")
-        print(f"  Description:  {r['description']}")
-        print(f"  Agents:       {', '.join(r['agents'])}")
-        print(f"  Instructions: paste the whole of {ROOT / r['instructions_file']}")
-        print()
-
-
 def template():
     """A version 2 Switch template as JSON (JSON is valid YAML). Unverified: not yet run in Console."""
     reg = registry()
@@ -195,9 +172,6 @@ def template():
 
 
 def main():
-    if "--agents" in sys.argv:
-        print_agents()
-        return 0
     if "--template" in sys.argv:
         print(template())
         return 0
@@ -218,8 +192,8 @@ def main():
         print(f"[{'PASS' if ok else 'FAIL'}] {name}: {detail}")
     print()
     print("All checks passed." if not failed else f"{failed} check(s) failed.")
-    print("Not checked here (look in Switch Console): the six agents are registered and running,")
-    print("and the rooms Pinewood HQ, Parvati Trek and Switch Summit exist. Print the fields with: python scripts/setup.py --agents")
+    print("Not checked here (look in Switch Console): the seven agents are registered and running,")
+    print("and the rooms Pinewood HQ, Parvati Trek and Switch Summit exist. The fields are in CONSOLE_SETUP.md.")
     return 1 if failed else 0
 
 
