@@ -4,7 +4,9 @@
 
 A team of AI agents and one person rescues a group trip when something breaks, and a conference day when its plan changes. Built on [Switch](https://docs.switchagents.ai/) for the Flip the Switch Hackathon (Track 01, Best Business Workflow).
 
-**Demo video:** _link added at submission_
+**Demo video:** [youtu.be/W8jyl4eu8zU](https://youtu.be/W8jyl4eu8zU) (the trek on Telegram, then Switch Summit on Mattermost)
+
+**Run replay:** [triprescue-demo.vercel.app](https://triprescue-demo.vercel.app/), a step-by-step replay of our runs, taken from the exported room transcripts (the Switch Summit replay is marked illustrative: it follows the scenario file)
 
 ## The problem
 
